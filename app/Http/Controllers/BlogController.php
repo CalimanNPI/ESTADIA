@@ -2,105 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\blogRequest;
+use App\Http\Resources\BlogResource;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
 
-    function __construct()
+    /**function __construct()
     {
         $this->middleware('permission:ver-blog|crear-blog|editar-blog|borrar-blog')->only('index');
         $this->middleware('permission:crear-blog', ['only' => ['create', 'store']]);
         $this->middleware('permission:editar-blog', ['only' => ['edit', 'update']]);
         $this->middleware('permission:borrar-blog', ['only' => ['destroy']]);
-    }
+    }*/
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $blogs = Blog::paginate(5);
-        return view('blogs.index', compact('blogs'));
+        return BlogResource::collection(Blog::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('blogs.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(blogRequest $request)
     {
-        request()->validate([
-            'titulo' => 'required',
-            'contenido' => 'required'
-        ]);
-        Blog::create($request->all());
-        return redirect()->route('blog.index');
+        if($request->hasFile('archivo')){
+            $file = $request->archivo->getClientOriginalName();
+            info($file);
+        }
+        $blog = Blog::create($request->validated());
+        return new BlogResource($blog);
+        //return redirect()->route('blog.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(Blog $blog)
     {
-        //
+        return response()->json(['message' => 'task was successful']);
+        return new BlogResource($blog);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Blog $blog)
     {
         return view('blogs.edit', compact('blog'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Blog $blog)
+    public function update(Blog $blog, blogRequest $request,)
     {
-        request()->validate([
-            'titulo' => 'required',
-            'contenido' => 'required'
-        ]);
-        $blog->update($request->all());
-        return redirect()->route('blog.index');
+        $blog->update($request->validated());
+        return new BlogResource($blog);
+       // return redirect()->route('blog.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Blog $blog)
     {
         $blog->delete();
-        return redirect()->route('blog.index');
+        return response()->noContent();
     }
 }

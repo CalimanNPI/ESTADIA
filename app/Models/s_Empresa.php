@@ -24,12 +24,6 @@ class s_Empresa extends Model
 
     protected $primaryKey = 'idempresa'; 
 
-    protected $hidden = [
-        'rfc',
-        'claveciec',
-        'clavefiel',
-    ];
-
     protected $attributes = [
         'activa' => 'true',
         'activacion' => '123',

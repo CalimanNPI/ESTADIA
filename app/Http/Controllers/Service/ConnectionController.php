@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Service;
 
-use App\Models\s_Empresa;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 //Agregados
-use PhpCfdi\SatWsDescargaMasiva\RequestBuilder\FielRequestBuilder\Fiel;
-use PhpCfdi\SatWsDescargaMasiva\RequestBuilder\FielRequestBuilder\FielRequestBuilder;
 use PhpCfdi\SatWsDescargaMasiva\Service;
 use PhpCfdi\SatWsDescargaMasiva\WebClient\GuzzleWebClient;
 
-class ServiceController extends Controller
+class ConnectionController extends Controller
 {
-    public function peticion(s_Empresa $empresa)
+      public function createWebClient(s_Empresa $empresa)
     {
-
         // verificar que la FIEL sea válida
         if (!$empresa->clavefiel->isValid()) {
             return;
@@ -30,7 +27,7 @@ class ServiceController extends Controller
 
         // Creación del servicio
         $service = new Service($requestBuilder, $webClient);
-        
+
         return $service;
     }
 }
