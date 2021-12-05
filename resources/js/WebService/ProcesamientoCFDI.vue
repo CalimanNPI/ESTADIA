@@ -3,7 +3,7 @@
     <form @submit.prevent="getConsultation">
       <div class="grid grid-cols-3 gap-4">
         <div class="col-span-3">
-          <div date-rangepicker class="flex items-center">
+          <div class="flex items-center">
             <div class="relative">
               <input
                 name="start"
@@ -474,15 +474,42 @@
                       "
                       @click="getDownloadLink(todo.packagesIds)"
                     >
-                      <svg
-                        class="fill-current w-4 h-4 mr-2"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
-                      </svg>
-                      <span>Download</span>
+                      <span>Paquetes</span>
                     </button>
+                  </td>
+
+                  <td
+                    class="
+                      px-6
+                      py-4
+                      whitespace-nowrap
+                      text-sm
+                      font-medium
+                      text-gray-900
+                    "
+                  >
+                    <a
+                      class="
+                        text-white
+                        bg-green-700
+                        hover:bg-green-800
+                        focus:ring-4 focus:ring-blue-300
+                        font-medium
+                        rounded-lg
+                        text-sm
+                        px-5
+                        py-2.5
+                        items-center
+                        transition
+                        duration-300
+                        ease-in-out
+                      "
+                      :href="todo.link"
+                      download
+                      target="_blank"
+                    >
+                      <span>Download</span>
+                    </a>
                   </td>
                 </tr>
               </tbody>
@@ -577,33 +604,20 @@ export default {
         });
     },
     async getDownloadLink(id) {
-      await axios
-        .post("api/procesamiento/downloadLink/" + id)
-        .then((result) => {
-          if (response.status == 200) {
-            this.$swal({
-              icon: "success",
-              title: response.data.message,
-              text: response.data.packages,
-            });
-          }
-          if (response.data.cod == 400) {
-            this.$swal({ icon: "error", title: response.data.message });
-          }
-          this.form_submitting = false;
+      // window.open(`api/procesamiento/downloadLink/${id}`);
+      await axios({
+        url: "api/procesamiento/downloadLink/" + id,
+        method: "GET",
+        responseType: "blob",
+      })
+        .then((response) => {
+          var fileUrl = window.URL.createObjectURL(new Blob([response.data]));
+          var fileLink = document.createElement("a");
+          fileLink.href = fileUrl;
+          fileLink.setAttribute("download", "archivo1.zip");
+          document.body.appendChild(fileLink);
+          fileLink.click();
         })
-        .catch((err) => {
-          this.$swal({ icon: "error", title: "Error" + err });
-          if (err.response.status === 422) {
-            this.errors = err.response.data.errors;
-          }
-          this.form_submitting = false;
-        });
-    },
-    getDownload(url) {
-      axios
-        .post("api/procesamiento/download/" + url)
-        .then((result) => {})
         .catch((err) => {
           this.$swal({ icon: "error", title: "Error" + err });
           if (err.response.status === 422) {

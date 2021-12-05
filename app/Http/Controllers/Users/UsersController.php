@@ -6,85 +6,67 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\User;
-use Spatie\Permission\Contracts\Role;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Gate;
 
 class UsersController extends Controller
 {
-    
+
     public function index()
     {
-        $usuarios = User::paginate(5);
-        return view('usuarios.index', compact('usuarios'));
-    }
-
-    public function create()
-    {
-        $roles = Role::pluck('name', 'name')->all();
-        return view('usuarios.create', compact('roles'));
+        //abort_if(Gate::denies('user_index'), 403);
+        $users = User::all()->load('roles');
+        return response()->json($users);
     }
 
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm-password',
-            'roles' => 'required'
+            'email' => 'required|email|unique:users',
+            'password' => 'required'
         ]);
 
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
+        $user = User::create($request->only('name', 'email')
+            + [
+                'password' => bcrypt($request->input('password')),
+            ]);
 
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
-
-        return redirect()->route('user.index');
+        $roles = $request->input('roles', []);
+        $user->syncRoles($roles);
+        return response()->json($user);
     }
 
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        //abort_if(Gate::denies('user_show'), 403);
+        // $user = User::findOrFail($id);
+        $user->load('roles');
+        return response()->json($user);
     }
 
-    public function edit($id)
+    public function update(Request $request, User $user)
     {
-        $user = User::find($id);
-        $roles = Role::pluck('name', 'name')->all();
-        $userRole = $user->roles->pluck('name', 'name')->all();
-        return view('usuarios.edit', compact('user', 'roles', 'userRole'));
+        // $user=User::findOrFail($id);
+        $data = $request->only('name', 'email');
+        $password = $request->input('password');
+        if ($password)
+            $data['password'] = bcrypt($password);
+
+        $user->update($data);
+
+        if(!empty($request->input('roles',[])))
+        $user->syncRoles($request->input('roles', []));
+        return response()->json($user);
     }
 
-
-    public function update(Request $request, $id)
+    public function destroy(User $user)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'same:confirm-password',
-            'roles' => 'required'
-        ]);
-
-        $input = $request->all();
-        if (!empty($input['password'])) {
-            $input['password'] = Hash::make($input['password']);
-        } else {
-            $input = Arr::except($input, array('password'));
+        //abort_if(Gate::denies('user_destroy'), 403);
+        if (auth('sanctum')->user()->id == $user->id) {
+            return response()->json($user, 400);
         }
 
-        $user = User::find($id);
-        $user->update($input);
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
-
-        $user->assignRole($request->input('roles'));
-        return redirect()->route('user.index');
-    }
-
-    public function destroy($id)
-    {
-        User::find($id)->delete();
-        return redirect()->route('user.index');
+        $user->delete();
+        return response()->noContent(200);
     }
 }

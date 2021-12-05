@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\s_Acceso;
 use App\Models\s_Empresa;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class EmpresaController extends Controller
 {
@@ -17,14 +18,13 @@ class EmpresaController extends Controller
         $empresas = DB::table('s_empresa')
             ->join('s_acceso', 's_empresa.idempresa', '=', 's_acceso.idempresa')
             ->select('s_empresa.*')
-            ->where('s_acceso.idusuario',  1)
+            ->where('s_acceso.idusuario',  auth('sanctum')->user()->id)
             ->get();
         return response()->json($empresas);
     }
 
     public function store(EmpresaRequest $request)
     {
-
         $empresa = s_Empresa::create(
             $request->only(
                 'nombre',
@@ -37,8 +37,8 @@ class EmpresaController extends Controller
         $acceso = s_Acceso::create(
             [
                 'idempresa' => $empresa->idempresa,
-                'idusuario' =>  1,
-                'creadopor' =>  1,
+                'idusuario' =>  auth('sanctum')->user()->id,
+                'creadopor' =>  auth('sanctum')->user()->id,
             ]
         );
         return new EmpresaResource($empresa);
@@ -59,10 +59,5 @@ class EmpresaController extends Controller
     {
         $empresa->delete();
         return response()->noContent();
-    }
-
-    public function globalCookie(s_Empresa $empresa)
-    {
-        session(['empresa' => $empresa->idempresa]);
     }
 }

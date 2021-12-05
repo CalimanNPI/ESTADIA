@@ -10,14 +10,9 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-
     <style>
         body {
             font-family: 'Nunito', sans-serif;
-        }
-
-        .router-link-active {
-            font-weight: bold;
         }
     </style>
 </head>
@@ -37,10 +32,6 @@
             @endauth
         </div>
         @endif
-        <div id="app">
-            <app></app>
-        </div>
-        <script src="{{ mix('js/app.js') }}" defer></script>
 </body>
 
 </html>

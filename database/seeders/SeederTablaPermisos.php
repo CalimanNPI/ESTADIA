@@ -29,8 +29,8 @@ class SeederTablaPermisos extends Seeder
             'borrar-blog',
         ];
 
-        foreach ($permisos as  $permiso) {
-            Permission::create(['name'=>$permiso]);
-        }
+        // foreach ($permisos as  $permiso) {
+        //     Permission::create(['name'=>$permiso]);
+        // }
     }
 }

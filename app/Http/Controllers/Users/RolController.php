@@ -4,80 +4,53 @@ namespace App\Http\Controllers\Users;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\DB;
 
 class RolController extends Controller
 {
-    
-    function __construct()
-    {
-        $this->middleware('permission:ver-rol|crear-rol|editar-rol|borrar-rol', ['only' => ['index']]);
-        $this->middleware('permission:crear-rol', ['only' => ['create', 'store']]);
-        $this->middleware('permission:editar-rol', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:borrar-rol', ['only' => ['destroy']]);
-    }
 
     public function index()
     {
-        $roles = Role::paginate(5);
-        return view('roles.index', compact('roles'));
-    }
-
-    public function create()
-    {
-        $permission = Permission::get();
-        return view('roles.create', compact('permission'));
+        // abort_if(Gate::denies('role_index'), 403);
+        $roles = Role::all()->load('permissions');
+        return response()->json($roles);
     }
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'permission' => 'required'
-        ]);
-
-        $role = Role::create(['name' => $request->input('name')]);
-        $role->syncPermission($request->input('permission'));
-        return redirect()->route('roles.index');
+        $role = Role::create($request->only('name'));
+        $role->syncPermissions($request->input('permissions', []));
+        return response()->noContent();
     }
 
-    public function show($id)
+    public function show(Role $role)
     {
-        //
+        //abort_if(Gate::denies('role_show'), 403);
+        $role->load('permissions');
+        return response()->json($role);
     }
 
-    public function edit($id)
-    {
-        $role = Role::findById($id);
-        $permission = Permission::get();
-        $rolePermission = DB::table('role_has_permissions')
-            ->where('role_has_permissions.role_id', $id)
-            ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
-            ->all();
+    // public function edit(Role $role)
+    // {
+    //     abort_if(Gate::denies('role_edit'), 403);
+    //     $permissions = Permission::all()->pluck('name', 'id');
+    //     $role->load('permissions');
+    //     return response()->json($role);
+    //     return view('roles.edit', compact('role', 'permissions'));
+    // }
 
-        return view('roles.edit', compact('role', 'permission', 'rolePermission'));
+    public function update(Request $request, Role $role)
+    {
+        $role->update($request->only('name'));
+        $role->syncPermissions($request->input('permissions', []));
+        return response()->json($role);
     }
 
-    public function update(Request $request, $id)
+    public function destroy(Role $role)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'permission' => 'required'
-        ]);
-
-        $role = Role::find($id);
-        $role->name = $request->input('name');
-        $role->save();
-        $role->syncPermission($request->input('permission'));
-        return redirect()->route('roles.index');
-    }
-
-    public function destroy($id)
-    {
-        DB::table('roles')->where('id', $id)->delete();
-        return redirect()->route('roles.index');
+        //abort_if(Gate::denies('role_delete'), 403);
+        $role->delete();
+        return response()->noContent();
     }
 }

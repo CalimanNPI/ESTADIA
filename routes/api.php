@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\BlogController;
 use App\Http\Controllers\Empresa\EmpresaController;
 use App\Http\Controllers\Service\FielController;
 use App\Http\Controllers\Service\ServiceController;
 use App\Http\Controllers\Service\SolicitudController;
+use App\Http\Controllers\Users\AbilitiesController;
+use App\Http\Controllers\Users\PermissionController;
 use App\Http\Controllers\Users\RolController;
 use App\Http\Controllers\Users\UsersController;
 use Illuminate\Http\Request;
@@ -25,22 +26,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('blogs', BlogController::class);
-
 Route::apiResource('empresa', EmpresaController::class);
 Route::post('/empresa/fiel/{empresa}', [FielController::class, 'createFiel']);
-Route::post('/empresa/global/{empresa}', [EmpresaController::class, 'globalCookie']);
+Route::post('/empresa/global/{empresa}', function () {
+
+});
 
 Route::post('/procesamiento/consultation', [ServiceController::class, 'getConsultation']);
 Route::post('/procesamiento/verification/{requestId}', [ServiceController::class, 'getVerification']);
 Route::post('/procesamiento/downloadLink/{packagesIds}', [ServiceController::class, 'getDownloadLink']);
-Route::post('/procesamiento/download/{link}', [ServiceController::class, 'getDownload']);
 
-Route::apiResource('roles', RolController::class);
-Route::post('/roles/showPermission', [RolController::class, 'showPermission']);
-Route::post('/roles/showRole', [RolController::class, 'getDownload']);
-
+Route::apiResource('permission', PermissionController::class);
+Route::apiResource('role', RolController::class);
 Route::apiResource('user', UsersController::class);
-Route::post('/user/showRoles', [UsersController::class, 'showRoles']);
 
-
+Route::apiResource('ability', AbilitiesController::class);

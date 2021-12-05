@@ -21,10 +21,12 @@
         "tailwindcss": "^2.0.2",
         "vue": "^2.6.11",
         "vue-loader": "^15.9.5",
+        "vue-router": "^3.5.2",
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
-        "vue-router": "^3.5.2",
+        "@casl/ability": "^5.4.3",
+        "@casl/vue": "^1.2.3",
         "vue-sweetalert2": "^5.0.2"
     }
 }

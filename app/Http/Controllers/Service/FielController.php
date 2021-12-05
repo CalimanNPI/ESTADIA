@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\s_Empresa;
 use App\Models\archivo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use PhpCfdi\SatWsDescargaMasiva\RequestBuilder\FielRequestBuilder\Fiel;
 use PhpCfdi\SatWsDescargaMasiva\RequestBuilder\FielRequestBuilder\FielRequestBuilder;
@@ -16,7 +17,7 @@ class FielController extends Controller
     {
         $this->validate($request, [
             'cer' => 'required',
-            'key' => 'required', 
+            'key' => 'required',
             'password' => 'required',
         ]);
 
@@ -28,41 +29,41 @@ class FielController extends Controller
             $key = $request->key->getClientOriginalName();
         }
 
-        //$certificado = time() . '_' . $request->file('certificado')->getClientOriginalName();
-        //$llaveprivada = time() . '_' . $request->file('llaveprivada')->getClientOriginalName();
-
-        $path_certificado = $request->file('cer')->store(
-            'public/files/',
+        $path_certificado = $request->file('cer')->storeAs(
+            'files/' . auth('sanctum')->user()->id . '/' . 'fiel/' . $empresa->idempresa,
             $cer
         );
 
-        $path_llaveprivada = $request->file('key')->store(
-            'public/files/',
+        $path_llaveprivada = $request->file('key')->storeAs(
+            'files/' . auth('sanctum')->user()->id . '/' . 'fiel/' . $empresa->idempresa,
             $key
         );
 
-        $archivo = archivo::create(
+        archivo::create(
             [
                 'tabla' => 's_empresa',
                 'extension' => 'key',
-                'tipoarchivo' => 'archivo',
+                'tipoarchivo' => 'Archivo',
                 'nombrearchivo' => $key,
                 'rutaoriginal' => $path_llaveprivada,
-                'elementosistema' => true,
+                'elementosistema' => 'Key',
                 'idtabla' => $empresa->idempresa,
                 'datos' => 'save',
-                'no_modificar'=> true,
-            ],
+                'no_modificar' => DB::raw('true'),
+            ]
+        );
+
+        archivo::create(
             [
                 'tabla' => 's_empresa',
                 'extension' => 'cer',
                 'tipoarchivo' => 'archivo',
-                'nombrearchivo'=> $cer,
+                'nombrearchivo' => $cer,
                 'rutaoriginal' => $path_certificado,
-                'elementosistema' => true,
+                'elementosistema' => 'Cer',
                 'idtabla' => $empresa->idempresa,
                 'datos' => 'save',
-                'no_modificar'=> true,
+                'no_modificar' => DB::raw('true'),
             ]
         );
 

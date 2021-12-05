@@ -20,7 +20,6 @@
           w-full
           p-2.5
         "
-        required=""
       />
       <p
         class="mt-2 text-sm text-red-600 italic"
@@ -53,7 +52,6 @@
           w-full
           p-2.5
         "
-        required=""
       />
       <p
         class="mt-2 text-sm text-red-600 italic"
@@ -84,7 +82,6 @@
           w-full
           p-2.5
         "
-        required=""
       />
       <p
         class="mt-2 text-sm text-red-600 italic"
@@ -117,7 +114,6 @@
           w-full
           p-2.5
         "
-        required=""
       />
       <p class="mt-2 text-sm text-red-600 italic" v-if="errors && errors.rfc">
         {{ errors.rfc[0] }}
@@ -168,7 +164,7 @@ export default {
             icon: "success",
             title: "La Empresa se creo",
           });
-          this.$router.push("/");
+          this.$router.push("/empresa");
           this.form_submitting = false;
         })
         .catch((err) => {

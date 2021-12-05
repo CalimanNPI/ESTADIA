@@ -11,6 +11,15 @@ class SolicitudController extends Controller
 {
     public function index()
     {
+        $date = new \DateTime();
+
+        $solicitud = DB::table('s_solicitud')
+            ->select('s_solicitud.*')
+            ->where('estadosol', 'En proceso')
+            ->where('estadopet', 'Aceptada')
+            ->whereDate('fechasol', $date->format('Y/m/d'))
+            ->get();
+        return response()->json($solicitud);
     }
 
     public function store(Request $request)

@@ -20,7 +20,6 @@
           w-full
           p-2.5
         "
-        required=""
       />
       <p
         class="mt-2 text-sm text-red-600 italic"
@@ -157,6 +156,7 @@ export default {
           }
 
           this.form_submitting = false;
+          this.$router.push("/empresa");
         })
         .catch((err) => {
           this.$swal({ icon: "error", title: "Error" + err });

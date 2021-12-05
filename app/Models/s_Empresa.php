@@ -22,7 +22,7 @@ class s_Empresa extends Model
         'idempresa'
     ];
 
-    protected $primaryKey = 'idempresa'; 
+    protected $primaryKey = 'idempresa';
 
     protected $attributes = [
         'activa' => 'true',
