@@ -36,11 +36,10 @@ class ServiceController extends Controller
             'startdate' => 'required|date',
             'enddate' => 'required|date'
         ]);
-        $value = session()->get('empresa');
 
         return response()->json([
             "requestId" => "1231546789",
-            "message" =>  "ASdasd" . Cookie::get('empresa'),
+            "message" =>  $empresa->rfc,
             'estadopet' => "Aceptada",
             'estadosol' =>  'En proceso',
 
@@ -108,7 +107,7 @@ class ServiceController extends Controller
 
         $requestId = $query->getRequestId(); // El identificador de la consulta está en $query->getRequestId()
 
-        $solicitud = s_Solicitud::create(
+      s_Solicitud::create(
             [
                 'fechaini' => $input['startdate'],
                 'fechafin' =>  $input['enddate'],
@@ -122,8 +121,10 @@ class ServiceController extends Controller
                 'tipo_archivos' => $archivo,
             ]
         );
+        $solicitud = s_Solicitud::all()->where('idempresa',  $empresa->idempresa)
 
         if ($estadopet !== 'Fallo') {
+            return response()->json($solicitud, 200);
             return response()->json([
                 "requestId" => $requestId,
                 "message" => "La solicitud {$requestId} está lista",
@@ -141,17 +142,17 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function getVerification($requestId, s_Empresa $empresa)
+    public function getVerification(s_Empresa $empresa, $requestId)
     {
-
         return response()->json([
             'packagesIds' => "packagesIds",
             'packages' => "Se encontraron 3 paquetes",
-            "message" => "asdasdasd",
-            "requestId" => $requestId,
+            "message" => $empresa->rfc,
+            "requestId" =>  $requestId,
         ], 200);
 
         $solicitud = s_Solicitud::find('idpet', $requestId);
+
         // Creación de servicio
         $service = new ConnectionController();
         $service->createWebClient($empresa);
@@ -224,7 +225,7 @@ class ServiceController extends Controller
         }*/
     }
 
-    public function getDownloadLink($packagesIds, s_Empresa $empresa)
+    public function getDownloadLink(s_Empresa $empresa, $packagesIds)
     {
         $empresa = s_Empresa::find(1);
         $message = "";

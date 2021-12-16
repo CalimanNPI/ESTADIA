@@ -1,31 +1,19 @@
 <template>
   <div class="flex flex-col">
-      <router-link :to="{ name: 'permission.create' }" class="mr-4" exact
-            >Crear permiso</router-link
-          >
+    <Link
+      color="blue"
+      iconName="font-awesome"
+      value="Crear permiso"
+      :link="{ name: 'permission.create' }"
+    />
     <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
         <div class="overflow-hidden sm:rounded-lg shadow-md">
           <table class="min-w-full">
-            <thead class="bg-gray-50">
+            <thead class=" bg-gray-50">
               <tr>
-                <th
-                  scope="col"
-                  class="
-                    text-xs
-                    font-medium
-                    text-gray-700
-                    px-6
-                    py-3
-                    text-left
-                    uppercase
-                    tracking-wider
-                  "
-                >
-                  Nombre
-                </th>
-                <th>Guard</th>
-                <th>Fecha de creación</th>
+                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">Nombre</th>
+                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">Guard</th>
                 <th scope="col" class="relative px-6 py-3">
                   <span class="sr-only">Acciones</span>
                 </th>
@@ -35,78 +23,30 @@
               <tr
                 v-for="item in items"
                 :key="item.id"
-                class="bg-white border-b"
+                class="
+                  bg-white
+                  border-b
+                "
               >
-                <td
-                  class="
-                    px-6
-                    py-4
-                    whitespace-nowrap
-                    text-sm
-                    font-medium
-                    text-gray-900
-                  "
-                >
+                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                   {{ item.name }}
                 </td>
-                 <td
-                  class="
-                    px-6
-                    py-4
-                    whitespace-nowrap
-                    text-sm
-                    font-medium
-                    text-gray-900
-                  "
-                >
+                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                   {{ item.guard_name }}
                 </td>
-                <td
-                  class="
-                    px-6
-                    py-4
-                    whitespace-nowrap
-                    text-sm
-                    font-medium
-                    text-gray-900
-                  "
-                >
-                  {{ item.created_at }}
-                </td>
-                <td
-                  class="
-                    px-6
-                    py-4
-                    whitespace-nowrap
-                    text-sm
-                    font-medium
-                    text-gray-900
-                  "
-                >
-                  <router-link
-                    :to="{
-                      name: 'permission.edit',
-                      params: { id: item.id },
-                    }"
-                    class="text-blue-600 hover:text-blue-900"
-                    >Edit
-                  </router-link>
-                  <a
-                    href="#"
+                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                  <Link
+                    color="blue"
+                    iconName="font-awesome"
+                    value="Editar"
+                    :link="{ name: 'permission.edit', params: { id: item.id } }"
+                  />
+                  <Button
+                    color="red"
+                    iconName="font-awesome"
+                    value="Eliminar"
                     @click="delete_permission(item.id)"
-                    class="
-                      shadow
-                      bg-red-500
-                      hover:bg-red-400
-                      focus:shadow-outline focus:outline-none
-                      text-white
-                      font-bold
-                      py-1
-                      px-2
-                      rounded
-                    "
-                    >Borar</a
-                  >
+                  />
                 </td>
               </tr>
             </tbody>
@@ -117,7 +57,11 @@
   </div>
 </template>
 <script>
+import Badge from "../components/Badge.vue";
+import Button from "../components/Button.vue";
+import Link from "../components/Link.vue";
 export default {
+  components: { Button, Link, Badge },
   data() {
     return {
       items: [],

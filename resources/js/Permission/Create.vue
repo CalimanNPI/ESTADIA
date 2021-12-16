@@ -1,56 +1,30 @@
 <template>
   <form @submit.prevent="submit_from">
     <div class="mb-6">
-      <label for="name" class="text-sm font-medium text-gray-900 block mb-2"
-        >Nombre</label
-      >
-      <input
-        v-model="fields.name"
-        id="name"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500
-          focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p
-        class="mt-2 text-sm text-red-600 italic"
+          <Label>Nombre</Label>
+      <Input v-model="fields.name" placeholder="Ingrese el nombre del permiso"></Input>
+      <input-error
         v-if="errors && errors.name"
-      >
-        {{ errors.name[0] }}
-      </p>
+        :message="errors.name[0]"
+      ></input-error>
     </div>
 
-    <input
-      type="submit"
+    <Button
+      color="blue"
+      iconName="font-awesome"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
-      class="
-        text-white
-        bg-blue-700
-        hover:bg-blue-800
-        focus:ring-4 focus:ring-blue-300
-        font-medium
-        rounded-lg
-        text-sm
-        px-5
-        py-2.5
-        text-center
-        transition duration-300 ease-in-out
-      "
     />
   </form>
 </template>
 <script>
+import Input from "../components/Input.vue";
+import InputError from "../components/InputError.vue";
+import Button from "../components/Button.vue";
+import Label from "../components/Label.vue";
+
 export default {
+  components: { InputError, Input, Button, Label },
   data() {
     return {
       fields: {
@@ -68,7 +42,7 @@ export default {
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "Se creo el permiso",
+            title: "Se creó el permiso",
           });
           this.$router.push("/permission");
           this.form_submitting = false;

@@ -1,90 +1,111 @@
 <template>
   <form @submit.prevent="submit_from">
     <div class="mb-6">
-      <label for="name" class="text-sm font-medium text-gray-900 block mb-2"
-        >Nombre</label
-      >
-      <input
+      <Label>Nombre Rol</Label>
+      <Input
         v-model="fields.name"
-        id="name"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500 focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p class="mt-2 text-sm text-red-600 italic" v-if="errors && errors.name">
-        {{ errors.name[0] }}
-      </p>
+        placeholder="Ingrese el nombre del Rol"
+      ></Input>
+      <input-error
+        v-if="errors && errors.name"
+        :message="errors.name[0]"
+      ></input-error>
     </div>
-    <fieldset>
-      <legend>Permisos</legend>
-      <div v-for="item in items" :key="item.id">
-        <div class="flex items-center items-start mb-4">
-          <input
-            :id="item.name"
-            aria-describedby="checkbox-1"
-            type="checkbox"
-            class="
-              bg-gray-50
-              border-gray-300
-              focus:ring-3 focus:ring-blue-300
-              h-4
-              w-4
-              rounded
-            "
-            :value="item.id"
-            v-model="fields.permissions"
-            :name="item.name"
-          />
-          <label :for="item.name" class="text-sm ml-3 font-medium text-gray-900"
-            >{{item.name}}
-            </label
-          >
-        </div>
-      </div>
-    </fieldset>
 
-    <input
-      type="submit"
+    <label
+      for="permissions"
+      class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+      >Seleccione los permisos</label
+    >
+    <select
+      id="permissions"
+      v-model="permission"
+      @change="selectPermission()"
+      class="
+        bg-gray-50
+        border border-gray-300
+        text-gray-900 text-sm
+        rounded-lg
+        focus:ring-blue-500 focus:border-blue-500
+        block
+        w-full
+        p-2.5
+        dark:bg-gray-700
+        dark:border-gray-600
+        dark:placeholder-gray-400
+        dark:text-white
+        dark:focus:ring-blue-500
+        dark:focus:border-blue-500
+      "
+    >
+      <option disabled value="">Seleccione un elemento</option>
+      <option
+        v-for="item in items"
+        :key="item.id"
+        v-bind:value="{ id: item.id, name: item.name }"
+      >
+        {{ item.name }}
+      </option>
+    </select>
+
+    <div
+      class="
+        md:container md:mx-auto
+        grid
+        md:grid-flow-col
+        place-content-start
+        md:place-content-center
+      "
+    >
+      <span
+        class="
+          bg-blue-100
+          text-blue-800 text-xs
+          font-semibold
+          mr-2
+          px-2.5
+          py-0.5
+          rounded
+          dark:bg-blue-200 dark:text-blue-800
+          cursor-pointer
+          transition
+          duration-300
+          ease-in-out
+        "
+        v-for="perm in perms"
+        :key="perm.id"
+        @click="deletePermission(perm.id)"
+        >{{ perm.name }} <font-awesome-icon :icon="['fab', 'window-close']"
+      /></span>
+    </div>
+
+    <Button
+      color="blue"
+      iconName="font-awesome"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
-      class="
-        text-white
-        bg-blue-700
-        hover:bg-blue-800
-        focus:ring-4 focus:ring-blue-300
-        font-medium
-        rounded-lg
-        text-sm
-        px-5
-        py-2.5
-        text-center
-        transition
-        duration-300
-        ease-in-out
-      "
     />
   </form>
 </template>
 <script>
+import Input from "../components/Input.vue";
+import InputError from "../components/InputError.vue";
+import Button from "../components/Button.vue";
+import Label from "../components/Label.vue";
 export default {
+  components: { InputError, Input, Button, Label },
   data() {
     return {
       fields: {
         name: "",
-        permissions:[]
+        permissions: [],
       },
       errors: {},
       form_submitting: false,
       items: [],
+      permission: [],
+      perms: [], //permisos
+      filter: [], //permisos
     };
   },
   mounted() {
@@ -92,14 +113,19 @@ export default {
   },
   methods: {
     submit_from() {
-        console.log(this.fields);
       this.form_submitting = true;
+
+      this.fields.permissions = this.perms.map(function (perm) {
+        return perm.id;
+      });
+      console.log(this.fields);
+
       axios
         .post("/api/role", this.fields)
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "El rol se creo",
+            title: "El rol se creo" + this.fields,
           });
           this.$router.push("/role");
           this.form_submitting = false;
@@ -125,6 +151,25 @@ export default {
             text: "error en : " + err,
           });
         });
+    },
+    selectPermission() {
+      this.filterResults();
+      if (this.filter.length == 0) {
+        this.perms.push(this.permission);
+      }
+      this.filter.pop();
+    },
+    filterResults() {
+      this.filter = this.perms.filter((perm) =>
+        perm.name.toLowerCase().startsWith(this.permission.name.toLowerCase())
+      );
+    },
+    deletePermission(id) {
+      this.perms.forEach(function (perm, index, object) {
+        if (perm.id === id) {
+          object.splice(index, 1);
+        }
+      });
     },
   },
 };

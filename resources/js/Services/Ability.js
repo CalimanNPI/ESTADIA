@@ -15,14 +15,17 @@ export default defineAbility((can, cannot) => {
     can("user_index", "User");
     can("user_create", "User");
     can("user_edit", "User");
-    can("user_destroy", "User");
+    can("role_index", "User");
 
     can("empresa_index", "Empresa");
     can("empresa_create", "Empresa");
     can("empresa_edit", "Empresa");
     can("empresa_destroy", "Empresa");
 
+    can("empresa_fiel", "Empresa");
+
     can("web_service", "User");
+    can("reports", "User");
 });
 
 

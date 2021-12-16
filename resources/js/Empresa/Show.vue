@@ -2,25 +2,21 @@
   <div
     class="
       w-48
-      bg-white
+      bg-blue-400
       rounded-lg
       shadow-md
       p-6
       cursor-pointer
       mb-8
       hover:bg-green-lightest
-      focus:outline-none
-      focus:shadow-outline-green
+      focus:outline-none focus:shadow-outline-green
     "
-    :class="{
-      'bg-green-lightest shadow-outline-green': this.active === this.id,
-    }"
     tabindex="0"
     @click="updateActive"
     @keydown.space="updateActive"
   >
     <div class="flex justify-between items-center mb-3">
-      <h3 class="uppercase text-base tracking-wide text-blue-darker my-2">
+      <h3 class="uppercase text-base tracking-wide text-white my-2">
         {{ this.nombre }}
       </h3>
       <div v-if="this.active === this.id">
@@ -57,12 +53,12 @@
       </div>
     </div>
 
-    <div class="mb-1 font-semibold text-blue-darker">
+    <div class="mb-1 font-semibold text-white">
       <span class="text-1xl mr-2">{{ this.razonsocial }}</span>
     </div>
 
     <div>
-      <span class="text-xl font-semibold text-blue-darker">{{ this.rfc }}</span>
+      <span class="text-xl font-semibold text-white">{{ this.rfc }}</span>
     </div>
   </div>
 </template>
@@ -77,25 +73,7 @@ export default {
   methods: {
     updateActive() {
       this.$emit("onUpdatePlan", this.id);
-      this.setEmpresa();
-    },
-    setEmpresa() {
-      axios
-        .get("/empresa/global/" + this.id)
-        .then((result) => {
-          this.$swal({
-            icon: "info",
-            title: "Se selecciono la empresa" + this.nombre,
-            text: "RFC: " + this.rfc,
-          });
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: "Error"+ err,
-            text: "error en : " + err,
-          });
-        });
+      this.$cookies.set('currentEmpresa', this.id, Infinity);
     },
   },
 };

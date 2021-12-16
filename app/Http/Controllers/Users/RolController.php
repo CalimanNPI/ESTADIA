@@ -27,7 +27,7 @@ class RolController extends Controller
     public function show(Role $role)
     {
         //abort_if(Gate::denies('role_show'), 403);
-        $role->load('permissions');
+        $role->with('permissions')->get()->pluck('permissions')->flatten()->pluck('name', 'id')->toArray();
         return response()->json($role);
     }
 

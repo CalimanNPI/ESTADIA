@@ -14,9 +14,13 @@ import RoleIndex from "./Role/Index.vue";
 import RoleCreate from "./Role/Create.vue";
 import RoleEdit from "./Role/Edit.vue";
 
+import PermissionIndex from "./Permission/Index.vue";
+import PermissionCreate from "./Permission/Create.vue";
+import PermissionEdit from "./Permission/Edit.vue";
+
 import ProcesamientoCFDI from "./WebService/ProcesamientoCFDI.vue";
 
-const router = new VueRouter({
+export default router = new VueRouter({
     mode: "history",
     routes: [
         {
@@ -50,6 +54,22 @@ const router = new VueRouter({
             path: "/role/edit/:id",
             component: RoleEdit,
             name: "role.edit"
+        },
+        {
+            //permission
+            path: "/permission",
+            component: PermissionIndex,
+            name: "permission.index"
+        },
+        {
+            path: "/permission/create",
+            component: PermissionCreate,
+            name: "permission.create"
+        },
+        {
+            path: "/permission/edit/:id",
+            component: PermissionEdit,
+            name: "permission.edit"
         },
         {
             //empresa
@@ -86,5 +106,3 @@ const router = new VueRouter({
         }
     ]
 });
-
-module.exports = { router };

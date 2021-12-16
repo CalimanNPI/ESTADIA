@@ -1,32 +1,42 @@
 <template>
-    <input type="radio" :value="value" v-model="proxyChecked"
-           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+  <div class="flex items-center mb-4">
+    <input
+      type="radio"
+      :checked="isChecked"
+      :value="value"
+      @change="$emit('change', $event.target.value)"
+      class="
+        h-4
+        w-4
+        border-gray-300
+        focus:ring-2 focus:ring-blue-300
+        dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600
+      "
+    />
+    <label
+      for="idradio"
+      class="text-sm font-medium text-gray-900 ml-2 block dark:text-gray-300"
+    >
+      {{ label }}
+    </label>
+  </div>
 </template>
 
 <script>
 export default {
-    emits: ['update:checked'],
-
-    props: {
-        checked: {
-            type: [Array, Boolean],
-            default: false,
-        },
-        value: {
-            default: null,
-        },
+  model: {
+    prop: "modelValue",
+    event: "change",
+  },
+  props: {
+    label: { type: String, default: "", required: true },
+    modelValue: { default: "" },
+    value: { type: String, default: undefined },
+  },
+  computed: {
+    isChecked() {
+      return this.modelValue == this.value;
     },
-
-    computed: {
-        proxyChecked: {
-            get() {
-                return this.checked;
-            },
-
-            set(val) {
-                this.$emit("update:checked", val);
-            },
-        },
-    },
-}
+  },
+};
 </script>

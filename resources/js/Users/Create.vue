@@ -1,119 +1,45 @@
 <template>
   <form @submit.prevent="submit_from">
     <div class="mb-6">
-      <label for="name" class="text-sm font-medium text-gray-900 block mb-2"
-        >Nombre</label
-      >
-      <input
-        v-model="fields.name"
-        id="name"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500 focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p class="mt-2 text-sm text-red-600 italic" v-if="errors && errors.name">
-        {{ errors.name[0] }}
-      </p>
+      <Label>Nombre</Label>
+      <Input v-model="fields.name" placeholder="Carlos J ..."></Input>
+      <input-error
+        v-if="errors && errors.name"
+        :message="errors.name[0]"
+      ></input-error>
     </div>
 
     <div class="mb-6">
-      <label for="email" class="text-sm font-medium text-gray-900 block mb-2"
-        >Email</label
-      >
-      <input
-        type="email"
-        v-model="fields.email"
-        id="email"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500 focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p class="mt-2 text-sm text-red-600 italic" v-if="errors && errors.email">
-        {{ errors.email[0] }}
-      </p>
+      <Label>Email</Label>
+      <Input v-model="fields.email" placeholder="Email ..."></Input>
+      <input-error
+        v-if="errors && errors.email"
+        :message="errors.email[0]"
+      ></input-error>
     </div>
 
     <div class="mb-6">
-      <label for="password" class="text-sm font-medium text-gray-900 block mb-2"
-        >Password</label
-      >
-      <input
-        type="password"
-        v-model="fields.password"
-        id="password"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500 focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p
-        class="mt-2 text-sm text-red-600 italic"
+      <Label>Password</Label>
+      <Input v-model="fields.password" placeholder="password"></Input>
+      <input-error
         v-if="errors && errors.password"
-      >
-        {{ errors.password[0] }}
-      </p>
+        :message="errors.password[0]"
+      ></input-error>
     </div>
 
     <div class="mb-6">
-      <label
-        for="password_confirmation"
-        class="text-sm font-medium text-gray-900 block mb-2"
-        >Password confirmation</label
-      >
-      <input
-        type="password"
+      <Label>Password confirmation</Label>
+      <Input
         v-model="fields.password_confirmation"
-        id="password_confirmation"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500 focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p
-        class="mt-2 text-sm text-red-600 italic"
+        placeholder="Confirme el password"
+      ></Input>
+      <input-error
         v-if="errors && errors.password_confirmation"
-      >
-        {{ errors.password_confirmation[0] }}
-      </p>
+        :message="errors.password_confirmation[0]"
+      ></input-error>
     </div>
     <div class="mb-6">
-      <label
-        for="rol"
-        class="text-sm font-medium text-gray-900 block mb-2"
+      <label for="rol" class="text-sm font-medium text-gray-900 block mb-2"
         >Seleccione el rol</label
       >
       <select
@@ -131,40 +57,32 @@
         "
         v-model="fields.roles"
       >
-        <option v-for="item in items" :key="item.id" :value="item.id">{{item.name}}</option>
+        <option disabled value="">Seleccione un elemento</option>
+        <option v-for="item in items" :key="item.id" :value="item.id">
+          {{ item.name }}
+        </option>
       </select>
-        <p
-        class="mt-2 text-sm text-red-600 italic"
-        v-if="errors && errors.roles"
-      >
+      <p class="mt-2 text-sm text-red-600 italic" v-if="errors && errors.roles">
         {{ errors.roles[0] }}
       </p>
     </div>
 
-    <input
-      type="submit"
+   <Button
+      color="blue"
+      iconName="font-awesome"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
-      class="
-        text-white
-        bg-blue-700
-        hover:bg-blue-800
-        focus:ring-4 focus:ring-blue-300
-        font-medium
-        rounded-lg
-        text-sm
-        px-5
-        py-2.5
-        text-center
-        transition
-        duration-300
-        ease-in-out
-      "
     />
   </form>
 </template>
 <script>
+import Input from "../components/Input.vue";
+import InputError from "../components/InputError.vue";
+import Button from "../components/Button.vue";
+import Label from "../components/Label.vue";
+
 export default {
+  components: { InputError, Input, Button, Label },
   data() {
     return {
       fields: {
@@ -172,7 +90,7 @@ export default {
         email: "",
         password: "",
         password_confirmation: "",
-        roles:""
+        roles: "",
       },
       items: [],
       errors: {},

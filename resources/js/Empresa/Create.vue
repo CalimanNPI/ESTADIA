@@ -1,147 +1,66 @@
 <template>
   <form @submit.prevent="submit_from">
     <div class="mb-6">
-      <label for="nombre" class="text-sm font-medium text-gray-900 block mb-2"
-        >Nombre</label
-      >
-      <input
+      <Label>Nombre empresa</Label>
+      <Input
         v-model="fields.nombre"
-        id="nombre"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500
-          focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p
-        class="mt-2 text-sm text-red-600 italic"
+        placeholder="Ingrese el nombre de la empresa"
+      ></Input>
+      <input-error
         v-if="errors && errors.nombre"
-      >
-        {{ errors.nombre[0] }}
-      </p>
+        :message="errors.nombre[0]"
+      ></input-error>
     </div>
 
     <div class="mb-6">
-      <label
-        for="razonsocial"
-        class="text-sm font-medium text-gray-900 block mb-2"
-        >Razón Social</label
-      >
-      <input
-        type="text"
+      <Label>Razón Social</Label>
+      <Input
         v-model="fields.razonsocial"
-        id="razonsocial"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500
-          focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p
-        class="mt-2 text-sm text-red-600 italic"
+        placeholder="Ingrese la razón social"
+      ></Input>
+      <input-error
         v-if="errors && errors.razonsocial"
-      >
-        {{ errors.razonsocial[0] }}
-      </p>
+        :message="errors.razonsocial[0]"
+      ></input-error>
     </div>
 
     <div class="mb-6">
-      <label for="email" class="text-sm font-medium text-gray-900 block mb-2"
-        >Clave CIEC</label
-      >
-      <input
-        type="text"
+      <Label>Clave CIEC</Label>
+      <Input
         v-model="fields.claveciec"
-        id="claveciec"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500
-          focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p
-        class="mt-2 text-sm text-red-600 italic"
+        placeholder="Ingrese la clave CIEC"
+      ></Input>
+      <input-error
         v-if="errors && errors.claveciec"
-      >
-        {{ errors.claveciec[0] }}
-      </p>
+        :message="errors.claveciec[0]"
+      ></input-error>
     </div>
 
     <div class="mb-6">
-      <label
-        for="razonsocial"
-        class="text-sm font-medium text-gray-900 block mb-2"
-        >RFC</label
-      >
-      <input
-        type="text"
-        v-model="fields.rfc"
-        id="rfc"
-        require
-        class="
-          bg-gray-50
-          border border-gray-300
-          text-gray-900
-          sm:text-sm
-          rounded-lg
-          focus:ring-blue-500
-          focus:border-blue-500
-          block
-          w-full
-          p-2.5
-        "
-      />
-      <p class="mt-2 text-sm text-red-600 italic" v-if="errors && errors.rfc">
-        {{ errors.rfc[0] }}
-      </p>
+      <Label>RFC</Label>
+      <Input v-model="fields.rfc" placeholder="Ingrese el RFC"></Input>
+      <input-error
+        v-if="errors && errors.rfc"
+        :message="errors.rfc[0]"
+      ></input-error>
     </div>
 
-    <input
-      type="submit"
+    <Button
+      color="blue"
+      iconName="font-awesome"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
-      class="
-        text-white
-        bg-blue-700
-        hover:bg-blue-800
-        focus:ring-4 focus:ring-blue-300
-        font-medium
-        rounded-lg
-        text-sm
-        px-5
-        py-2.5
-        text-center
-        transition duration-300 ease-in-out
-      "
     />
   </form>
 </template>
 <script>
+import Input from "../components/Input.vue";
+import InputError from "../components/InputError.vue";
+import Button from "../components/Button.vue";
+import Label from "../components/Label.vue";
+
 export default {
+  components: { InputError, Input, Button, Label },
   data() {
     return {
       fields: {
@@ -162,7 +81,7 @@ export default {
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "La Empresa se creo",
+            title: "La Empresa se creó",
           });
           this.$router.push("/empresa");
           this.form_submitting = false;

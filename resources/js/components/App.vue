@@ -17,14 +17,16 @@
             >Ver usuarios</router-link
           >
 
-          <router-link
-            v-if="$can('web_service')"
-            :to="{ name: 'empresa.index' }"
-            class="mr-4"
-            exact
+          <router-link :to="{ name: 'empresa.index' }" class="mr-4" exact
             >Ver empresa</router-link
           >
 
+          <router-link
+            :to="{ name: 'procesamiento' }"
+            class="mr-4"
+            exact
+            >Procesamiento CFDI</router-link
+          >
           <router-link
             v-if="$can('web_service')"
             :to="{ name: 'procesamiento' }"
@@ -32,85 +34,99 @@
             exact
             >Procesamiento CFDI</router-link
           >
-
-          <btn>Guardar {{ currentUser.name }}</btn>
-          <a href="#" class="mr-4" exact id="delete-btn">Empresa</a>
         </div>
       </div>
     </div>
-    <div id="app">
-                        <app></app>
-                    </div>
-    <router-view></router-view>
-
-    <div
-      class="
-        bg-black bg-opacity-50
-        absolute
-        inset-0
-        hidden
-        justify-center
-        items-center
-      "
-      id="overlay"
-    >
-      <div
-        class="bg-gray-200 max-w-sm py-2 px-3 rounded shadow-xl text-gray-800"
-      >
-        <div class="flex justify-between items-center">
-          <h4 class="text-lg font-bold">Seleccione la empresa</h4>
-          <svg
-            class="h-6 w-6 cursor-pointer p-1 hover:bg-gray-300 rounded-full"
-            id="close-modal"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            ></path>
-          </svg>
-        </div>
-        <div class="mt-2 text-sm">
-          <div
-            class="
-              md:w-custom
-              mx-auto
-              py-8
-              md:flex md:justify-between md:flex-wrap
-            "
-          >
-            <div v-for="empresa in empresas" :key="empresa.idempresa">
-              <EmpresaShow
-                :id="empresa.idempresa"
-                :nombre="empresa.nombre"
-                :razonsocial="empresa.razonsocial"
-                :rfc="empresa.rfc"
-                v-model="active"
-              ></EmpresaShow>
-            </div>
-          </div>
-        </div>
-      </div>
+    <Dashboard />
+    <div class="flex flex-wrap justify-evenly">
+      <EmpresaShow
+        v-for="empresa in empresas"
+        :key="empresa.idempresa"
+        :id="empresa.idempresa"
+        :nombre="empresa.nombre"
+        :razonsocial="empresa.razonsocial"
+        :rfc="empresa.rfc"
+        v-model="active"
+      ></EmpresaShow>
     </div>
+
+
   </div>
 </template>
 <script>
 import EmpresaShow from "../Empresa/Show.vue";
-import btn from "./Button.vue";
-
+import Dashboard from "./Dashboard.vue";
 export default {
+  components: { EmpresaShow, Dashboard },
   data() {
     return {
       empresas: [],
       active: "",
       ability: [],
+      sidebarLinks: [
+        { title: "Dashboard", icon: "dashboard", path: { name: "dashboard" } },
+        {
+          title: "User management",
+          icon: "person",
+          path: { name: "dashboard" },
+          gate: "user_management_access",
+          children: [
+            {
+              title: "Permissions",
+              icon: "dashboard",
+              path: { name: "permission.index" },
+              gate: "permission_index",
+            },
+            {
+              title: "Roles",
+              icon: "dashboard",
+              path: { name: "role.index" },
+              gate: "role_index",
+            },
+            {
+              title: "User",
+              icon: "dashboard",
+              path: { name: "user.index" },
+              gate: "user_index",
+            },
+          ],
+        },
+        {
+          title: "Company management",
+          icon: "person",
+          path: { name: "dashboard" },
+          gate: "company_management_access",
+          children: [
+            {
+              title: "Company",
+              icon: "dashboard",
+              path: { name: "empresa.index" },
+              gate: "empresa_index",
+            },
+            {
+              title: "Create FIEL",
+              icon: "dashboard",
+              path: { name: "empresa.fiel" },
+              gate: "empresa_fiel",
+            },
+          ],
+        },
+        {
+          title: "CFDIs processing",
+          icon: "person",
+          path: { name: "procesamiento" },
+          gate: "web_service",
+          children: [],
+        },
+        {
+          title: "Reports",
+          icon: "person",
+          path: { name: "reports" },
+          gate: "reports",
+          children: [],
+        },
+      ],
     };
-  },
-  components: {
-    EmpresaShow,
-    btn,
   },
   mounted() {
     this.getResults();
@@ -148,37 +164,8 @@ export default {
           });
         });
     },
-    setEmpresa(id) {
-      axios
-        .get("/empresa/global/" + id)
-        .then((result) => {
-          console.log(result);
-        })
-        .catch((err) => {
-          this.$swal({
-            icon: "error",
-            title: "Se produjo un Error",
-            text: "error en : " + err,
-          });
-        });
-    },
   },
 };
-
-window.addEventListener("DOMContentLoaded", () => {
-  const overlay = document.querySelector("#overlay");
-  const delBtn = document.querySelector("#delete-btn");
-  const closeBtn = document.querySelector("#close-modal");
-
-  const toggleModal = () => {
-    overlay.classList.toggle("hidden");
-    overlay.classList.toggle("flex");
-  };
-
-  delBtn.addEventListener("click", toggleModal);
-
-  closeBtn.addEventListener("click", toggleModal);
-});
 </script>
 
 
