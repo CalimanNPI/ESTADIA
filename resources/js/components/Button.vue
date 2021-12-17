@@ -21,7 +21,7 @@
       hover:-translate-y-1
       motion-reduce:transition-none motion-reduce:transform-none`"
   >
-    <font-awesome-icon :icon="['fab', iconName]" />
+    <font-awesome-icon :icon="['far', iconName]" />
     {{ value }}
   </button>
 </template>

@@ -12,51 +12,45 @@
       ></input-error>
     </div>
 
-    <label
-      for="permissions"
-      class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
-      >Seleccione los permisos</label
-    >
-    <select
-      id="permissions"
-      v-model="permission"
-      @change="selectPermission()"
-      class="
-        bg-gray-50
-        border border-gray-300
-        text-gray-900 text-sm
-        rounded-lg
-        focus:ring-blue-500 focus:border-blue-500
-        block
-        w-full
-        p-2.5
-        dark:bg-gray-700
-        dark:border-gray-600
-        dark:placeholder-gray-400
-        dark:text-white
-        dark:focus:ring-blue-500
-        dark:focus:border-blue-500
-      "
-    >
-      <option disabled value="">Seleccione un elemento</option>
-      <option
-        v-for="item in items"
-        :key="item.id"
-        v-bind:value="{ id: item.id, name: item.name }"
+    <div class="mb-6">
+      <label
+        for="permissions"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+        >Seleccione los permisos</label
       >
-        {{ item.name }}
-      </option>
-    </select>
+      <select
+        id="permissions"
+        v-model="permission"
+        @change="selectPermission()"
+        class="
+          bg-gray-50
+          border border-gray-300
+          text-gray-900 text-sm
+          rounded-lg
+          focus:ring-blue-500 focus:border-blue-500
+          block
+          w-full
+          p-2.5
+          dark:bg-gray-700
+          dark:border-gray-600
+          dark:placeholder-gray-400
+          dark:text-white
+          dark:focus:ring-blue-500
+          dark:focus:border-blue-500
+        "
+      >
+        <option disabled value="">Seleccione un elemento</option>
+        <option
+          v-for="item in items"
+          :key="item.id"
+          v-bind:value="{ id: item.id, name: item.name }"
+        >
+          {{ item.name }}
+        </option>
+      </select>
+    </div>
 
-    <div
-      class="
-        md:container md:mx-auto
-        grid
-        md:grid-flow-col
-        place-content-start
-        md:place-content-center
-      "
-    >
+    <div class="mb-6 px-6 py-4 text-sm whitespace-nowrap flex flex-wrap">
       <span
         class="
           bg-blue-100
@@ -68,20 +62,19 @@
           rounded
           dark:bg-blue-200 dark:text-blue-800
           cursor-pointer
-          transition
-          duration-300
-          ease-in-out
+          hover:bg-blue-400
         "
         v-for="perm in perms"
         :key="perm.id"
         @click="deletePermission(perm.id)"
-        >{{ perm.name }} <font-awesome-icon :icon="['fab', 'window-close']"
+        >{{ perm.name }} <font-awesome-icon :icon="['far', 'window-close']"
       /></span>
+
     </div>
 
     <Button
       color="blue"
-      iconName="font-awesome"
+      iconName="plus-square"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
     />
@@ -105,7 +98,7 @@ export default {
       items: [],
       permission: [],
       perms: [], //permisos
-      filter: [], //permisos
+      filter: [],
     };
   },
   mounted() {
@@ -118,14 +111,13 @@ export default {
       this.fields.permissions = this.perms.map(function (perm) {
         return perm.id;
       });
-      console.log(this.fields);
 
       axios
         .post("/api/role", this.fields)
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "El rol se creo" + this.fields,
+            title: "Se creó el rol correctamente",
           });
           this.$router.push("/role");
           this.form_submitting = false;

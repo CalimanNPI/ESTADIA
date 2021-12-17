@@ -21,10 +21,7 @@
             >Ver empresa</router-link
           >
 
-          <router-link
-            :to="{ name: 'procesamiento' }"
-            class="mr-4"
-            exact
+          <router-link :to="{ name: 'procesamiento' }" class="mr-4" exact
             >Procesamiento CFDI</router-link
           >
           <router-link
@@ -34,30 +31,32 @@
             exact
             >Procesamiento CFDI</router-link
           >
+          <a href="#" id="btn">Empresas</a>
         </div>
       </div>
     </div>
     <Dashboard />
-    <div class="flex flex-wrap justify-evenly">
-      <EmpresaShow
-        v-for="empresa in empresas"
-        :key="empresa.idempresa"
-        :id="empresa.idempresa"
-        :nombre="empresa.nombre"
-        :razonsocial="empresa.razonsocial"
-        :rfc="empresa.rfc"
-        v-model="active"
-      ></EmpresaShow>
-    </div>
 
-
+    <Modal value="Seleccione una empresa">
+      <div class="flex flex-wrap justify-evenly">
+        <EmpresaShow
+          v-for="empresa in empresas"
+          :key="empresa.idempresa"
+          :id="empresa.idempresa"
+          :nombre="empresa.nombre"
+          :razonsocial="empresa.razonsocial"
+          :rfc="empresa.rfc"
+          v-model="active"
+        ></EmpresaShow></div
+    ></Modal>
   </div>
 </template>
 <script>
 import EmpresaShow from "../Empresa/Show.vue";
 import Dashboard from "./Dashboard.vue";
+import Modal from "./Modal.vue";
 export default {
-  components: { EmpresaShow, Dashboard },
+  components: { EmpresaShow, Dashboard, Modal },
   data() {
     return {
       empresas: [],

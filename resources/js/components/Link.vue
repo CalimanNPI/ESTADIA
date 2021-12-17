@@ -15,7 +15,7 @@
         hover:underline`"
     exact
   >
-    <font-awesome-icon :icon="['fab', iconName]" />{{ value }}</router-link
+    <font-awesome-icon :icon="['far', iconName]" />{{ value }}</router-link
   >
 </template>
 <script>

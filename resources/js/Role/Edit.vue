@@ -12,22 +12,68 @@
       ></input-error>
     </div>
 
-    <fieldset>
-      <legend>Permisos</legend>
-        <div class="flex items-center items-start mb-4">
-              <Checkbox
+    <div class="mb-6">
+      <label
+        for="permissions"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+        >Seleccione los permisos</label
+      >
+      <select
+        id="permissions"
+        v-model="permission"
+        @change="selectPermission()"
+        class="
+          bg-gray-50
+          border border-gray-300
+          text-gray-900 text-sm
+          rounded-lg
+          focus:ring-blue-500 focus:border-blue-500
+          block
+          w-full
+          p-2.5
+          dark:bg-gray-700
+          dark:border-gray-600
+          dark:placeholder-gray-400
+          dark:text-white
+          dark:focus:ring-blue-500
+          dark:focus:border-blue-500
+        "
+      >
+        <option disabled value="">Seleccione un elemento</option>
+        <option
           v-for="item in items"
           :key="item.id"
-          :label="item.name"
-          :idcheckbox="item.name"
-          :value="item.id"
-          v-model="fields.permissions"
-        />
-      </div>
-    </fieldset>
+          v-bind:value="{ id: item.id, name: item.name }"
+        >
+          {{ item.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="mb-6 px-6 py-4 text-sm whitespace-nowrap flex flex-wrap">
+      <span
+        class="
+          bg-blue-100
+          text-blue-800 text-xs
+          font-semibold
+          mr-2
+          px-2.5
+          py-0.5
+          rounded
+          dark:bg-blue-200 dark:text-blue-800
+          cursor-pointer
+          hover:bg-blue-400
+        "
+        v-for="perm in perms"
+        :key="perm.id"
+        @click="deletePermission(perm.id)"
+        >{{ perm.name }} <font-awesome-icon :icon="['far', 'window-close']"
+      /></span>
+
+    </div>
     <Button
       color="blue"
-      iconName="font-awesome"
+      iconName="edit"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
     />
@@ -38,7 +84,6 @@ import Input from "../components/Input.vue";
 import InputError from "../components/InputError.vue";
 import Button from "../components/Button.vue";
 import Label from "../components/Label.vue";
-
 export default {
   components: { InputError, Input, Button, Label },
   data() {
@@ -50,24 +95,29 @@ export default {
       errors: {},
       form_submitting: false,
       items: [],
+      permission: [],
+      perms: [], //permisos
+      filter: [],
     };
   },
   mounted() {
     this.getResults();
-    axios.get("/api/role/" + this.$route.params.id).then((response) => {
-      this.fields = response.data;
-    });
+    this.getPermissions();
   },
   methods: {
     submit_from() {
-      console.log("the fields  " + this.fields);
       this.form_submitting = true;
+
+      this.fields.permissions = this.perms.map(function (perm) {
+        return perm.id;
+      });
+
       axios
         .put("/api/role/" + this.$route.params.id, this.fields)
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "El rol se actualizo",
+            title: "Se actualizó el rol correctamente",
           });
           this.$router.push("/role");
           this.form_submitting = false;
@@ -93,6 +143,33 @@ export default {
             text: "error en : " + err,
           });
         });
+    },
+    selectPermission() {
+      this.filterResults();
+      if (this.filter.length == 0) {
+        this.perms.push(this.permission);
+      }
+      this.filter.pop();
+    },
+    filterResults() {
+      this.filter = this.perms.filter((perm) =>
+        perm.name.toLowerCase().startsWith(this.permission.name.toLowerCase())
+      );
+    },
+    deletePermission(id) {
+      this.perms.forEach(function (perm, index, object) {
+        if (perm.id === id) {
+          object.splice(index, 1);
+        }
+      });
+    },
+    getPermissions() {
+      axios.get("/api/role/" + this.$route.params.id).then((response) => {
+        this.fields.name = response.data.name;
+        this.perms = response.data.permissions.map(function (value) {
+          return { name: value.name, id: value.id };
+        });
+      });
     },
   },
 };

@@ -47,7 +47,7 @@
 
     <Button
       color="blue"
-      iconName="font-awesome"
+      iconName="plus-square"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
     />
@@ -81,7 +81,7 @@ export default {
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "La Empresa se creó",
+            title: "Se creó el rol correctamente",
           });
           this.$router.push("/empresa");
           this.form_submitting = false;

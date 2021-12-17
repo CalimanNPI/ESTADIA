@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <Link
       color="blue"
-      iconName="font-awesome"
+      iconName="plus-square"
       value="Crear rol"
       :link="{ name: 'role.create' }"
     />
@@ -45,14 +45,14 @@
                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                   <Link
                     color="blue"
-                    iconName="font-awesome"
+                    iconName="edit"
                     value="Editar"
                     :link="{ name: 'role.edit', params: { id: item.id } }"
                   />
 
                   <Button
                     color="red"
-                    iconName="font-awesome"
+                    iconName="trash-alt"
                     value="Eliminar"
                     v-on:click="delete_role(item.id)"
                   />

@@ -13,24 +13,38 @@ import VueSweetalert2 from "vue-sweetalert2";
 Vue.use(VueSweetalert2);
 import "sweetalert2/dist/sweetalert2.min.css";
 
-import '@themesberg/flowbite';
+import "@themesberg/flowbite";
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faFontAwesome } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faFontAwesome)
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+    faWindowClose,
+    faEdit,
+    faTrashAlt,
+    faPlusSquare,
+    faQuestionCircle
+} from "@fortawesome/free-regular-svg-icons";//edit, trash-alt, plus-square, question-circle
+import { faFontAwesome } from "@fortawesome/free-brands-svg-icons";//font-awesome
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+library.add(
+    faFontAwesome,
+    faWindowClose,
+    faEdit,
+    faTrashAlt,
+    faPlusSquare,
+    faQuestionCircle
+);
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 
-import ability from './Services/Ability'
-import { abilitiesPlugin } from '@casl/vue'
-Vue.use(abilitiesPlugin, ability)
+import ability from "./Services/Ability";
+import { abilitiesPlugin } from "@casl/vue";
+Vue.use(abilitiesPlugin, ability);
 
-import auth from './mixins/auth'
+import auth from "./mixins/auth";
 Vue.mixin(auth);
 //Vue.prototype.$currentEmpresa = '0'
 
-import VueCookies from 'vue-cookies'
-Vue.use(VueCookies)
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
 
 import EmpresaIndex from "./Empresa/Index.vue";
 import EmpresaCreate from "./Empresa/Create.vue";

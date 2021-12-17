@@ -69,7 +69,7 @@
 
    <Button
       color="blue"
-      iconName="font-awesome"
+      iconName="plus-square"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
     />
@@ -108,7 +108,7 @@ export default {
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "El usuario se creo",
+            title: "Se creó el usuario correctamente",
           });
           this.$router.push("/user");
           this.form_submitting = false;

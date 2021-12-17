@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Users;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RolController extends Controller
@@ -27,8 +28,8 @@ class RolController extends Controller
     public function show(Role $role)
     {
         //abort_if(Gate::denies('role_show'), 403);
-        $role->with('permissions')->get()->pluck('permissions')->flatten()->pluck('name', 'id')->toArray();
-        return response()->json($role);
+       $role->load('permissions');
+       return response()->json($role);
     }
 
     // public function edit(Role $role)

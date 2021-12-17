@@ -76,7 +76,7 @@
 
     <Button
       color="blue"
-      iconName="font-awesome"
+      iconName="plus-square"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
     />

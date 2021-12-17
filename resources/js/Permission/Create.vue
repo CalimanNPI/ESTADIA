@@ -11,7 +11,7 @@
 
     <Button
       color="blue"
-      iconName="font-awesome"
+      iconName="plus-square"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
     />
@@ -42,7 +42,7 @@ export default {
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "Se creó el permiso",
+            title: "Se creó el rol correctamente",
           });
           this.$router.push("/permission");
           this.form_submitting = false;

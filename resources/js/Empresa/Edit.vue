@@ -47,7 +47,7 @@
 
    <Button
       color="blue"
-      iconName="font-awesome"
+      iconName="edit"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
     />
@@ -86,7 +86,7 @@ export default {
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "La Empresa se actualizó",
+            title: "Se actualizó el rol correctamente",
           });
           this.$router.push("/empresa");
           this.form_submitting = false;

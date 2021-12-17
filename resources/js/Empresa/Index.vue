@@ -2,7 +2,7 @@
   <div class="flex flex-col">
     <Link
       color="blue"
-      iconName="font-awesome"
+      iconName="plus-square"
       value="Crear empresa"
       :link="{ name: 'empresa.create' }"
     />
@@ -55,7 +55,7 @@
 
                   <Link
                     color="blue"
-                    iconName="font-awesome"
+                    iconName="edit"
                     value="Edit"
                     :link="{
                       name: 'empresa.edit',

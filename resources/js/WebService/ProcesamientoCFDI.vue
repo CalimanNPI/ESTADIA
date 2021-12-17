@@ -1,135 +1,145 @@
 <template>
   <div class="md:container md:mx-auto">
     <form @submit.prevent="getConsultation">
-      <div class="grid grid-rows-3 grid-flow-col gap-4">
-        <fieldset
-          class="
-            rounded-r-lg
-            border border-solid border-2 border-blue-300
-            hover:border-blue-700
-            row-span-2
-          "
-        >
-          <legend>
-            <span class="text-gray-900 text-center">Tipos de datos</span>
-          </legend>
-
-          <div class="flex items-center mb-4">
-            <Radio
-              label="emitidos"
-              idcheckbox="Emitidos"
-              value="emitidos"
-              v-model="fields.datatypes"
-              nameRadio="data"
-            />
-            <Radio
-              label="recibidos"
-              idcheckbox="Recibidos"
-              value="recibidos"
-              v-model="fields.datatypes"
-              nameRadio="data"
-            />
-            <input-error
-              v-if="errors && errors.datatypes"
-              :message="errors.datatypes[0]"
-            ></input-error>
-          </div>
-        </fieldset>
-
-        <fieldset
-          class="
-            rounded-r-lg
-            border border-solid border-2 border-blue-300
-            hover:border-blue-700
-            row-span-2
-          "
-        >
-          <legend>
-            <span class="text-gray-900 text-center">Tipos de datos</span>
-          </legend>
-
-          <div class="flex items-center mb-4">
-            <Radio
-              label="Metadata"
-              idcheckbox="metadata"
-              value="metadata"
-              v-model="fields.downloadtypes"
-              nameRadio="download"
-            />
-            <Radio
-              label="CFDI"
-              idcheckbox="CFDI"
-              value="CFDI"
-              v-model="fields.downloadtypes"
-              nameRadio="download"
-            />
-            <input-error
-              v-if="errors && errors.downloadtypes"
-              :message="errors.downloadtypes[0]"
-            ></input-error>
-          </div>
-        </fieldset>
-
-        <div class="flex items-center row-span-2 col-span-2">
-          <Label>Seleccione la fecha</Label>
-          <div class="relative">
+      <div class="grid grid-cols-6 gap-4">
+        <div class="col-start-2 col-span-4 mb-6 flex">
+          <div class="grow h-14">
             <input
               name="start"
               type="date"
-              v-model="fields.startdate"
+              v-model="fields.start"
               class="
+                shadow-sm
                 bg-gray-50
-                border border-gray-300
+                border border-blue-200
+                md:border-blue-200
+                focus:border-blue-500
+                border-opacity-75
                 text-gray-900
                 sm:text-sm
                 rounded-lg
-                focus:ring-blue-500 focus:border-blue-500
                 block
                 w-full
-                pl-10
                 p-2.5
+                placeholder-gray-500
               "
             />
+            <input-error
+              v-if="errors && errors.start"
+              :message="errors.start[0]"
+            ></input-error>
           </div>
-          <span class="mx-4 text-gray-500">A</span>
-          <div class="relative">
+          <div class="grow-0 h-14 text-lg font-bold a">Rango de fechas</div>
+          <div class="grow h-14">
             <input
               name="end"
               type="date"
-              v-model="fields.enddate"
+              v-model="fields.end"
               class="
+                shadow-sm
                 bg-gray-50
-                border border-gray-300
+                border border-blue-200
+                md:border-blue-200
+                focus:border-blue-500
+                border-opacity-75
                 text-gray-900
                 sm:text-sm
                 rounded-lg
-                focus:ring-blue-500 focus:border-blue-500
                 block
                 w-full
-                pl-10
                 p-2.5
+                placeholder-gray-500
               "
             />
+            <input-error
+              v-if="errors && errors.end"
+              :message="errors.end[0]"
+            ></input-error>
           </div>
-          <input-error
-            v-if="errors && errors.enddate"
-            :message="errors.enddate[0]"
-          ></input-error>
-          <input-error
-            v-if="errors && errors.startdate"
-            :message="errors.startdate[0]"
-          ></input-error>
         </div>
+        <div class="col-start-1 col-end-3 mb-6">
+          <fieldset
+            class="
+              rounded-r-lg
+              border-solid border-2 border-blue-300
+              hover:border-blue-700
+              row-span-2
+            "
+          >
+            <legend>
+              <span class="text-gray-900 text-center">Tipos de datos</span>
+            </legend>
 
+            <div class="flex items-center mb-4">
+              <Radio
+                label="emitidos"
+                idcheckbox="Emitidos"
+                value="emitidos"
+                v-model="fields.data"
+                nameRadio="data"
+              />
+              <Radio
+                label="recibidos"
+                idcheckbox="Recibidos"
+                value="recibidos"
+                v-model="fields.data"
+                nameRadio="data"
+              />
+              <input-error
+                v-if="errors && errors.data"
+                :message="errors.data[0]"
+              ></input-error>
+            </div>
+          </fieldset>
+        </div>
+        <div class="col-end-7 col-span-2 mb-6">
+          <fieldset
+            class="
+              rounded-r-lg
+              border-solid border-2 border-blue-300
+              hover:border-blue-700
+              row-span-2
+            "
+          >
+            <legend>
+              <span class="text-gray-900 text-center"
+                >Tipos de datos a descargar</span
+              >
+            </legend>
+
+            <div class="flex items-center mb-4">
+              <Radio
+                label="Metadata"
+                idcheckbox="metadata"
+                value="metadata"
+                v-model="fields.download"
+                nameRadio="download"
+              />
+              <Radio
+                label="CFDI"
+                idcheckbox="CFDI"
+                value="CFDI"
+                v-model="fields.download"
+                nameRadio="download"
+              />
+              <input-error
+                v-if="errors && errors.download"
+                :message="errors.download[0]"
+              ></input-error>
+            </div>
+          </fieldset>
+        </div>
+        <div class="col-start-1 col-end-7 mb-6">
+          <Button
+            color="blue"
+            iconName="question-circle"
+            :disabled="form_submitting"
+            :value="form_submitting ? 'Consultando...' : 'Consultar'"
+          />
+        </div>
       </div>
-       <Button
-          color="blue"
-          iconName="font-awesome"
-          :disabled="form_submitting"
-          :value="form_submitting ? 'Consultando...' : 'Consultar'"
-        />
     </form>
-    <div inline-datepicker data-date="02/25/2022"></div>
+
     <div class="flex flex-col">
       <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
@@ -445,40 +455,32 @@
       </div>
     </div>
 
-    <Checkbox label="Baz" value="baz" v-model="MySelectedValues" />
-    <Checkbox label="Baz" value="baz" v-model="MySelectedValues" />
-    <Checkbox label="Baz" value="baz" v-model="MySelectedValues" />
-    <Checkbox label="Baz" value="baz" v-model="MySelectedValues" />
-    <Radio label="Baz" value="baz" v-model="MySelectedValue" />
+    <RadioBox label="Baz" value="baz" v-model="MySelectedValue" />
+    <RadioBox label="Baz" value="baz" v-model="MySelectedValue" />
+    <RadioBox label="Baz" value="baz" v-model="MySelectedValue" />
   </div>
 </template>
 
 <script>
-import Input from "../components/Input.vue";
 import InputError from "../components/InputError.vue";
 import Button from "../components/Button.vue";
-import Label from "../components/Label.vue";
-import Radio from "../components/Radio.vue";
-import Checkbox from "../components/Checkbox.vue";
+import RadioBox from "../components/Radio.vue";
 
 export default {
   components: {
-    InputError: InputError,
-    Input: Input,
-    Button: Button,
-    Label: Label,
-    Radio: Radio,
-    Checkbox: Checkbox,
+    InputError,
+    Button,
+    Label,
+    RadioBox,
   },
   data() {
     return {
       fields: {
-        startdate: "",
-        enddate: "",
-        datatypes: "",
-        downloadtypes: "",
+        start: "",
+        end: "",
+        data: "",
+        download: "",
       },
-      MySelectedValues: [],
       MySelectedValue: "",
       errors: {},
       form_submitting: false,
@@ -490,7 +492,6 @@ export default {
   mounted() {},
   methods: {
     async getConsultation() {
-      console.log(this.MySelectedValues);
       console.log(this.MySelectedValue);
       this.form_submitting = true;
       await axios

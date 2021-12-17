@@ -69,7 +69,7 @@
 
      <Button
       color="blue"
-      iconName="font-awesome"
+      iconName="edit"
       :disabled="form_submitting"
       :value="form_submitting ? 'Guardando...' : 'Guardar'"
     />
@@ -111,7 +111,7 @@ export default {
         .then((result) => {
           this.$swal({
             icon: "success",
-            title: "El usuario se actualizo",
+            title: "Se actualizó el rol correctamente",
           });
           this.$router.push("/user");
           this.form_submitting = false;
