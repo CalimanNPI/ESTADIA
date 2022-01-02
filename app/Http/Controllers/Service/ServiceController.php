@@ -7,23 +7,13 @@ use Illuminate\Http\Request;
 
 use App\Models\s_Empresa;
 use App\Models\s_Solicitud;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use PhpCfdi\SatWsDescargaMasiva\RequestBuilder\FielRequestBuilder\FielRequestBuilder;
 use PhpCfdi\SatWsDescargaMasiva\Services\Query\QueryParameters;
 use PhpCfdi\SatWsDescargaMasiva\Shared\DateTimePeriod;
 use PhpCfdi\SatWsDescargaMasiva\Shared\DownloadType;
 use PhpCfdi\SatWsDescargaMasiva\Shared\RequestType;
-
-//Agregados
-use PhpCfdi\SatWsDescargaMasiva\Service;
-use PhpCfdi\SatWsDescargaMasiva\WebClient\GuzzleWebClient;
 use ZipArchive;
-use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
@@ -31,11 +21,14 @@ class ServiceController extends Controller
     {
 
         $this->validate($request, [
-            'datatypes' => 'required',
-            'downloadtypes' => 'required',
-            'startdate' => 'required|date',
-            'enddate' => 'required|date'
+            'data' => 'required',
+            'download' => 'required',
+            'start' => 'required|date',
+            'end' => 'required|date'
         ]);
+
+        $solicitud = s_Solicitud::all();
+        return response()->json($solicitud, 200);
 
         return response()->json([
             "requestId" => "1231546789",
@@ -46,12 +39,12 @@ class ServiceController extends Controller
         ], 200);
 
         $input = $request->all();
-        $tipo = substr($input['datatypes'], 0, 1);
-        $archivo = substr($input['downloadtypes'], 0, 4);
+        $tipo = substr($input['data'], 0, 1);
+        $archivo = substr($input['download'], 0, 4);
 
         //Del 13/ene/2019 00:00:00 al 13/ene/2019 23:59:59 (inclusive)
-        $startdate = $input['startdate'] . ' ' . '00:00:00';
-        $enddate = $input['enddate'] . ' ' . '23:59:59';
+        $startdate = $input['start'] . ' ' . '00:00:00';
+        $enddate = $input['end'] . ' ' . '23:59:59';
 
         $estadopet  = "Aceptada";
         $estadosol =  'En proceso';
@@ -60,7 +53,7 @@ class ServiceController extends Controller
         $service = new ConnectionController();
         $service->createWebClient($empresa);
 
-        if ($input['datatypes'] == 'emitidos' && $input['downloadtypes'] == 'metadata') {
+        if ($input['data'] == 'emitidos' && $input['download'] == 'metadata') {
             $consulta = QueryParameters::create(
                 DateTimePeriod::createFromValues($startdate,  $enddate),
                 DownloadType::issued(), // Emitidos DownloadType::issued()
@@ -69,7 +62,7 @@ class ServiceController extends Controller
             );
         }
 
-        if ($input['datatypes'] == 'recibidos' && $input['downloadtypes'] == 'metadata') {
+        if ($input['data'] == 'recibidos' && $input['download'] == 'metadata') {
             $consulta = QueryParameters::create(
                 DateTimePeriod::createFromValues($startdate,  $enddate),
                 DownloadType::received(), // Recibidos DownloadType::received()
@@ -78,7 +71,7 @@ class ServiceController extends Controller
             );
         }
 
-        if ($input['datatypes'] == 'emitidos' && $input['downloadtypes'] == 'CFDI') {
+        if ($input['data'] == 'emitidos' && $input['download'] == 'CFDI') {
             $consulta = QueryParameters::create(
                 DateTimePeriod::createFromValues($startdate,  $enddate),
                 DownloadType::received(), // Recibidos DownloadType::received()
@@ -87,7 +80,7 @@ class ServiceController extends Controller
             );
         }
 
-        if ($input['datatypes'] == 'recibidos' && $input['downloadtypes'] == 'CFDI') {
+        if ($input['data'] == 'recibidos' && $input['download'] == 'CFDI') {
             $consulta = QueryParameters::create(
                 DateTimePeriod::createFromValues($startdate,  $enddate),
                 DownloadType::issued(), // Emitidos DownloadType::issued()
@@ -107,10 +100,10 @@ class ServiceController extends Controller
 
         $requestId = $query->getRequestId(); // El identificador de la consulta está en $query->getRequestId()
 
-      s_Solicitud::create(
+        s_Solicitud::create(
             [
-                'fechaini' => $input['startdate'],
-                'fechafin' =>  $input['enddate'],
+                'fechaini' => $input['start'],
+                'fechafin' =>  $input['end'],
                 'tipo' =>  $tipo,
                 'idpet' => $requestId,
                 'estadopet' => $estadopet,
@@ -121,9 +114,10 @@ class ServiceController extends Controller
                 'tipo_archivos' => $archivo,
             ]
         );
-        $solicitud = s_Solicitud::all()->where('idempresa',  $empresa->idempresa)
+        $solicitud = s_Solicitud::all()->where('idempresa',  $empresa->idempresa);
 
         if ($estadopet !== 'Fallo') {
+
             return response()->json($solicitud, 200);
             return response()->json([
                 "requestId" => $requestId,
@@ -227,59 +221,40 @@ class ServiceController extends Controller
 
     public function getDownloadLink(s_Empresa $empresa, $packagesIds)
     {
-        $empresa = s_Empresa::find(1);
         $message = "";
         $error = "";
+
+        // $zip = new ZipArchive;
+        // $fileName = 'Example.zip';
+        // if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
         //     $files = File::files(public_path('Zip_Example'));
         //    Storage::put('files/' . auth('sanctum')->user()->id . '/' . 'zip_cfdi/' . $empresa->idempresa.'/' ."{$packagesIds}.zip", $files);
 
         //    //'files/' . auth('sanctum')->user()->id . '/' . 'zip_cfdi/' . $empresa->idempresa.'/' ."{$packagesIds}.zip", 'hola';
 
+        //     foreach ($files as $key => $value) {
+        //         $file = basename($value);
+        //         $zip->addFile($value, $file);
+        //     }
 
-        //     return response()->download(storage_path('app/public'). '/'.'files/' . auth('sanctum')->user()->id . '/' . 'zip_cfdi/' . $empresa->idempresa.'/' ."{$packagesIds}.zip", $empresa->idempresa.'.zip');
-
-        //     return response()->json([
-        //         'path_name' =>  $url,
-        //         'packagesIds' => $packagesIds
-        //     ], 200);
-
-        $zip = new ZipArchive;
-        $fileName = 'Example.zip';
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
-            $files = File::files(public_path('Zip_Example'));
-
-            foreach ($files as $key => $value) {
-                $file = basename($value);
-                $zip->addFile($value, $file);
-            }
-
-            $zip->close();
-        }
-        $headers = array(
-            'Content-Type: application/octet-stream',
-            "Content-Transfer-Encoding: Binary",
-            "Content-disposition: attachment;"
-        );
-        return response()->download(public_path($fileName), null, $headers);
+        //     $zip->close();
+        // }
 
         // Creación de servicio
         $service = new ConnectionController();
         $service->createWebClient($empresa);
 
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
-            // consultar el servicio de verificación
-            foreach ($packagesIds as $packageId) {
-                $download = $service->download($packageId);
-                if (!$download->getStatus()->isAccepted()) {
-                    $error += "El paquete {$packageId} no se ha podido descargar: {$download->getStatus()->getMessage()}<br>";
-                    continue;
-                }
-                $file = basename($download->getPackageContent());
-                $zip->addFile($packageId, $file);
-                //file_put_contents($zipfile, $download->getPackageContent());
-                $message += "El paquete {$packageId} se ha almacenado<br>";
+        foreach ($packagesIds as $packageId) {
+            $download = $service->download($packageId);
+            if (!$download->getStatus()->isAccepted()) {
+                $error += "El paquete {$packageId} no se ha podido descargar: {$download->getStatus()->getMessage()}<br>";
+                continue;
             }
+            $zipfile = storage_path('app/public/files/' . auth('sanctum')->user()->id . '/' . 'zip_cfdi_meta/' . $empresa->idempresa . '/' . "$packageId.zip");
+            file_put_contents($zipfile, $download->getPackageContent());
+            $message += "El paquete {$packageId} se ha almacenado<br>";
         }
-        return response()->download(public_path($fileName));
+
+        return response()->json(['message' => $message, 'error' => $error], 200);
     }
 }

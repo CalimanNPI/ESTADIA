@@ -45,7 +45,7 @@
                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                   <Link
                     color="blue"
-                    iconName="font-awesome"
+                    iconName="question-circle"
                     value="Fiel"
                     :link="{
                       name: 'empresa.fiel',

@@ -22,16 +22,27 @@ import {
     faTrashAlt,
     faPlusSquare,
     faQuestionCircle
-} from "@fortawesome/free-regular-svg-icons";//edit, trash-alt, plus-square, question-circle
-import { faFontAwesome } from "@fortawesome/free-brands-svg-icons";//font-awesome
+} from "@fortawesome/free-regular-svg-icons"; //edit, trash-alt, plus-square, question-circle -> far
+//import { faAmazon } from "@fortawesome/free-brands-svg-icons"; //font-awesome ->fab
+import {
+    faTimes,
+    faBars,
+    faUserCog,
+    faUserTag,
+    faUserTie
+} from "@fortawesome/free-solid-svg-icons"; // times, bars, user-cog, user-tag, user-tie ->fas
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 library.add(
-    faFontAwesome,
     faWindowClose,
     faEdit,
     faTrashAlt,
     faPlusSquare,
-    faQuestionCircle
+    faQuestionCircle,
+    faTimes,
+    faBars,
+    faUserCog,
+    faUserTag,
+    faUserTie
 );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
@@ -40,12 +51,18 @@ import { abilitiesPlugin } from "@casl/vue";
 Vue.use(abilitiesPlugin, ability);
 
 import auth from "./mixins/auth";
+import authEmpresa from "./mixins/empresa";
 Vue.mixin(auth);
+Vue.mixin(authEmpresa);
 //Vue.prototype.$currentEmpresa = '0'
 
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
 
+import TailablePagination from "tailable-pagination";
+Vue.use(TailablePagination);
+
+/**********************Rutas *********************/
 import EmpresaIndex from "./Empresa/Index.vue";
 import EmpresaCreate from "./Empresa/Create.vue";
 import EmpresaEdit from "./Empresa/Edit.vue";

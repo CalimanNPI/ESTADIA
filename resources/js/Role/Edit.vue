@@ -49,28 +49,38 @@
         </option>
       </select>
     </div>
-
-    <div class="mb-6 px-6 py-4 text-sm whitespace-nowrap flex flex-wrap">
-      <span
-        class="
-          bg-blue-100
-          text-blue-800 text-xs
-          font-semibold
-          mr-2
-          px-2.5
-          py-0.5
-          rounded
-          dark:bg-blue-200 dark:text-blue-800
-          cursor-pointer
-          hover:bg-blue-400
-        "
-        v-for="perm in perms"
-        :key="perm.id"
-        @click="deletePermission(perm.id)"
-        >{{ perm.name }} <font-awesome-icon :icon="['far', 'window-close']"
-      /></span>
-
-    </div>
+    <fieldset
+      class="
+        rounded-r-lg
+        border-solid border-2 border-blue-300
+        hover:border-blue-700
+        row-span-2
+      "
+    >
+      <legend>
+        <span class="text-gray-900 text-center">Permisos</span>
+      </legend>
+      <div class="mb-6 px-6 py-4 text-sm whitespace-nowrap flex flex-wrap">
+        <span
+          class="
+            bg-blue-100
+            text-blue-800 text-xs
+            font-semibold
+            mr-2
+            px-2.5
+            py-0.5
+            rounded
+            dark:bg-blue-200 dark:text-blue-800
+            cursor-pointer
+            hover:bg-blue-400
+          "
+          v-for="perm in perms"
+          :key="perm.id"
+          @click="deletePermission(perm.id)"
+          >{{ perm.name }} <font-awesome-icon :icon="['far', 'window-close']"
+        /></span>
+      </div>
+    </fieldset>
     <Button
       color="blue"
       iconName="edit"

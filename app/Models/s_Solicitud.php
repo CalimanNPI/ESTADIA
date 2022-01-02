@@ -30,5 +30,5 @@ class s_Solicitud extends Model
         'tipo_archivos',
     ];
 
-    protected $primaryKey = 'idsolicitud'; 
+    protected $primaryKey = 'idsolicitud';
 }

@@ -27,12 +27,17 @@
     "dependencies": {
         "@casl/ability": "^5.4.3",
         "@casl/vue": "^1.2.3",
+        "@fortawesome/fontawesome-free": "5.15.3",
         "@fortawesome/free-brands-svg-icons": "^5.15.4",
         "@fortawesome/free-regular-svg-icons": "^5.15.4",
+        "@fortawesome/free-solid-svg-icons": "^5.15.4",
         "@fortawesome/vue-fontawesome": "^2.0.6",
+        "@popperjs/core": "2.9.1",
         "@themesberg/flowbite": "^1.2.0",
-        "@themesberg/tailwind-datepicker": "^1.1.0",
+        "tailable-pagination": "^0.1.22",
         "vue-cookies": "^1.7.4",
-        "vue-sweetalert2": "^5.0.2"
+        "vue-js-modal": "^2.0.1",
+        "vue-sweetalert2": "^5.0.2",
+        "vue2-datepicker": "^3.10.4"
     }
 }

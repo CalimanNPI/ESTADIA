@@ -12,11 +12,51 @@
           <table class="min-w-full">
             <thead class="bg-gray-50">
               <tr>
-                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">
+                <th
+                  scope="col"
+                  class="
+                    px-6
+                    py-3
+                    text-xs
+                    font-medium
+                    tracking-wider
+                    text-left text-gray-700
+                    uppercase
+                    dark:text-gray-400
+                  "
+                >
                   Nombre
                 </th>
-                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">Guard</th>
-                <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400">Permisos</th>
+                <th
+                  scope="col"
+                  class="
+                    px-6
+                    py-3
+                    text-xs
+                    font-medium
+                    tracking-wider
+                    text-left text-gray-700
+                    uppercase
+                    dark:text-gray-400
+                  "
+                >
+                  Guard
+                </th>
+                <th
+                  scope="col"
+                  class="
+                    px-6
+                    py-3
+                    text-xs
+                    font-medium
+                    tracking-wider
+                    text-left text-gray-700
+                    uppercase
+                    dark:text-gray-400
+                  "
+                >
+                  Permisos
+                </th>
                 <th scope="col" class="relative px-6 py-3">
                   <span class="sr-only">Acciones</span>
                 </th>
@@ -34,7 +74,15 @@
                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                   {{ item.guard_name }}
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap flex flex-wrap">
+                <td
+                  class="
+                    px-6
+                    py-4
+                    text-sm text-gray-500
+                    whitespace-nowrap
+                    flex flex-wrap
+                  "
+                >
                   <Badge
                     v-for="permission in item.permissions"
                     :key="permission.id"
@@ -63,6 +111,8 @@
         </div>
       </div>
     </div>
+
+    <tailable-pagination :data="items" :showNumbers="true"/>
   </div>
 </template>
 <script>
@@ -73,7 +123,7 @@ export default {
   components: { Button, Link, Badge },
   data() {
     return {
-      items: [],
+      items: {},
     };
   },
   mounted() {

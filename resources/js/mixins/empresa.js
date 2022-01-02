@@ -1,13 +1,8 @@
-
-module.exports={
-    computed:{
-        currentUser(){
-            return JSON.parse(user.content);
-        },
-        isAuthenticated(){
-            return !! user.content;
+module.exports = {
+    computed: {
+        isSelectedEmpresa() {
+            return !! this.$cookies.get("currentEmpresa");
         }
-        //<div v-if="isAuthenticated">{{currentUser.name}}</div>
-
+        //<div v-if="isSelectedEmpresa">{{currentUser.name}}</div>
     }
-}
+};

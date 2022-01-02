@@ -1,145 +1,92 @@
 <template>
   <div class="md:container md:mx-auto">
-    <form @submit.prevent="getConsultation">
-      <div class="grid grid-cols-6 gap-4">
-        <div class="col-start-2 col-span-4 mb-6 flex">
-          <div class="grow h-14">
-            <input
-              name="start"
-              type="date"
-              v-model="fields.start"
-              class="
-                shadow-sm
-                bg-gray-50
-                border border-blue-200
-                md:border-blue-200
-                focus:border-blue-500
-                border-opacity-75
-                text-gray-900
-                sm:text-sm
-                rounded-lg
-                block
-                w-full
-                p-2.5
-                placeholder-gray-500
-              "
-            />
-            <input-error
-              v-if="errors && errors.start"
-              :message="errors.start[0]"
-            ></input-error>
-          </div>
-          <div class="grow-0 h-14 text-lg font-bold a">Rango de fechas</div>
-          <div class="grow h-14">
-            <input
-              name="end"
-              type="date"
-              v-model="fields.end"
-              class="
-                shadow-sm
-                bg-gray-50
-                border border-blue-200
-                md:border-blue-200
-                focus:border-blue-500
-                border-opacity-75
-                text-gray-900
-                sm:text-sm
-                rounded-lg
-                block
-                w-full
-                p-2.5
-                placeholder-gray-500
-              "
-            />
-            <input-error
-              v-if="errors && errors.end"
-              :message="errors.end[0]"
-            ></input-error>
-          </div>
-        </div>
-        <div class="col-start-1 col-end-3 mb-6">
-          <fieldset
-            class="
-              rounded-r-lg
-              border-solid border-2 border-blue-300
-              hover:border-blue-700
-              row-span-2
-            "
+    <form @submit.prevent="getConsultation" class="flex space-x-2 md:space-x-8">
+      <fieldset
+        class="
+          flex-initial
+          md:flex-1
+          mt-8
+          md:my-8
+          rounded-r-lg
+          border-solid border-2 border-blue-300
+          hover:border-blue-700
+          row-span-2
+        "
+      >
+        <legend>
+          <span class="text-blue-500 hover:underline text-center"
+            >Tipos de datos</span
           >
-            <legend>
-              <span class="text-gray-900 text-center">Tipos de datos</span>
-            </legend>
+        </legend>
+        <RadioBox
+          label="Emitidos"
+          idbox="emitidos"
+          value="emitidos"
+          v-model="fields.data"
+          nameRadio="data"
+        />
+        <RadioBox
+          label="Recibidos"
+          idbox="recibidos"
+          value="recibidos"
+          v-model="fields.data"
+          nameRadio="data"
+        />
 
-            <div class="flex items-center mb-4">
-              <Radio
-                label="emitidos"
-                idcheckbox="Emitidos"
-                value="emitidos"
-                v-model="fields.data"
-                nameRadio="data"
-              />
-              <Radio
-                label="recibidos"
-                idcheckbox="Recibidos"
-                value="recibidos"
-                v-model="fields.data"
-                nameRadio="data"
-              />
-              <input-error
-                v-if="errors && errors.data"
-                :message="errors.data[0]"
-              ></input-error>
-            </div>
-          </fieldset>
-        </div>
-        <div class="col-end-7 col-span-2 mb-6">
-          <fieldset
-            class="
-              rounded-r-lg
-              border-solid border-2 border-blue-300
-              hover:border-blue-700
-              row-span-2
-            "
+        <input-error v-if="errors && errors.data" :message="errors.data[0]" />
+      </fieldset>
+      <fieldset
+        class="
+          flex-initial
+          md:flex-1
+          mt-8
+          md:my-8
+          rounded-r-lg
+          border-solid border-2 border-blue-300
+          hover:border-blue-700
+          row-span-2
+        "
+      >
+        <legend>
+          <span class="text-blue-500 hover:underline text-center"
+            >Tipos de datos a descargar</span
           >
-            <legend>
-              <span class="text-gray-900 text-center"
-                >Tipos de datos a descargar</span
-              >
-            </legend>
-
-            <div class="flex items-center mb-4">
-              <Radio
-                label="Metadata"
-                idcheckbox="metadata"
-                value="metadata"
-                v-model="fields.download"
-                nameRadio="download"
-              />
-              <Radio
-                label="CFDI"
-                idcheckbox="CFDI"
-                value="CFDI"
-                v-model="fields.download"
-                nameRadio="download"
-              />
-              <input-error
-                v-if="errors && errors.download"
-                :message="errors.download[0]"
-              ></input-error>
-            </div>
-          </fieldset>
-        </div>
-        <div class="col-start-1 col-end-7 mb-6">
-          <Button
-            color="blue"
-            iconName="question-circle"
-            :disabled="form_submitting"
-            :value="form_submitting ? 'Consultando...' : 'Consultar'"
-          />
-        </div>
+        </legend>
+        <RadioBox
+          label="Metadata"
+          idbox="metadata"
+          value="metadata"
+          v-model="fields.download"
+          nameRadio="download"
+        />
+        <RadioBox
+          label="CFDI"
+          idbox="CFDI"
+          value="CFDI"
+          v-model="fields.download"
+          nameRadio="download"
+        />
+        <input-error
+          v-if="errors && errors.download"
+          :message="errors.download[0]"
+        />
+      </fieldset>
+      <div class="flex-initial md:flex-1 mt-8 md:my-8">
+        <input-error v-if="errors && errors.start" :message="errors.start[0]" />
+        <input-error v-if="errors && errors.end" :message="errors.end[0]" />
+        <Label value="Fecha Solicitud" />
+        <date-picker v-model="time" range valueType="format" />
+      </div>
+      <div class="flex-initial md:flex-1 mt-8 md:my-8">
+        <Button
+          color="blue"
+          iconName="question-circle"
+          :disabled="form_submitting"
+          :value="form_submitting ? 'Consultando...' : 'Consultar'"
+        />
       </div>
     </form>
-
+<!--
     <div class="flex flex-col">
       <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
@@ -261,7 +208,7 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Product 1 -->
+
                 <tr
                   class="bg-white border-b"
                   v-for="todo in todos"
@@ -453,25 +400,30 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <RadioBox label="Baz" value="baz" v-model="MySelectedValue" />
-    <RadioBox label="Baz" value="baz" v-model="MySelectedValue" />
-    <RadioBox label="Baz" value="baz" v-model="MySelectedValue" />
+    <p>{{ time }} <button @click="hola()">Holi</button></p>
+    <p>{{ fields }}</p>
+
+    <div >{{ todos }}</div>
   </div>
 </template>
 
 <script>
 import InputError from "../components/InputError.vue";
 import Button from "../components/Button.vue";
+import Label from "../components/Label.vue";
 import RadioBox from "../components/Radio.vue";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 
 export default {
   components: {
     InputError,
     Button,
-    Label,
     RadioBox,
+    Label,
+    DatePicker,
   },
   data() {
     return {
@@ -481,19 +433,25 @@ export default {
         data: "",
         download: "",
       },
-      MySelectedValue: "",
       errors: {},
       form_submitting: false,
       todos: [],
       nextTodoId: 1,
+      time: null,
     };
   },
-  components: {},
   mounted() {},
   methods: {
     async getConsultation() {
-      console.log(this.MySelectedValue);
+        if(!$cookies.isKey("currentEmpresa")){
+            throw this.$swal({
+              icon: "error",
+              title: 'Seleccione una empresa',
+            });;
+       }
       this.form_submitting = true;
+      this.fields.start = this.time[0];
+      this.fields.end = this.time[1];
       await axios
         .post(
           "/api/procesamiento/consultation/" +
@@ -502,20 +460,21 @@ export default {
         )
         .then((response) => {
           if (response.status == 200) {
-            this.$swal({ icon: "success", title: response.data.message });
-            this.todos.push({
-              id: this.nextTodoId++,
-              title: response.data.message,
-              requestId: response.data.requestId,
-              packagesIds: "",
-              link: "",
-              start: this.fields.startdate,
-              end: this.fields.enddate,
-              data: this.fields.datatypes,
-              types: this.fields.downloadtypes,
-              pet: response.data.estadopet,
-              sol: response.data.estadosol,
-            });
+            //this.$swal({ icon: "success", title: response.data.message });
+            this.todos = response.data;
+            // this.todos.push({
+            //   id: this.nextTodoId++,
+            //   title: response.data.message,
+            //   requestId: response.data.requestId,
+            //   packagesIds: "",
+            //   link: "",
+            //   start: this.fields.startdate,
+            //   end: this.fields.enddate,
+            //   data: this.fields.datatypes,
+            //   types: this.fields.downloadtypes,
+            //   pet: response.data.estadopet,
+            //   sol: response.data.estadosol,
+            // });
           }
           if (response.data.cod == 400) {
             this.$swal({ icon: "error", title: response.data.message });
