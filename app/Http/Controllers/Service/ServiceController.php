@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
+use App\Models\FileDownload;
 use Illuminate\Http\Request;
 
 use App\Models\s_Empresa;
@@ -27,16 +28,16 @@ class ServiceController extends Controller
             'end' => 'required|date'
         ]);
 
-        $solicitud = s_Solicitud::all();
+        $solicitud = s_Solicitud::all()->where('idempresa',  $empresa->idempresa);
         return response()->json($solicitud, 200);
 
-        return response()->json([
-            "requestId" => "1231546789",
-            "message" =>  $empresa->rfc,
-            'estadopet' => "Aceptada",
-            'estadosol' =>  'En proceso',
+        // return response()->json([
+        //     "requestId" => "1231546789",
+        //     "message" =>  $empresa->rfc,
+        //     'estadopet' => "Aceptada",
+        //     'estadosol' =>  'En proceso',
 
-        ], 200);
+        // ], 200);
 
         $input = $request->all();
         $tipo = substr($input['data'], 0, 1);
@@ -138,11 +139,19 @@ class ServiceController extends Controller
 
     public function getVerification(s_Empresa $empresa, $requestId)
     {
+
+        $zipfile = storage_path('app/public/files/' . auth('sanctum')->user()->id . '/' . 'zip_cfdi_meta/' . $empresa->idempresa . '/' . "$requestId.zip");
+        //file_put_contents($zipfile, '$download->getPackageContent()');
+        $file = FileDownload::create([
+            'name' => "$requestId.zip",
+            'paht' => $zipfile,
+            'idpet' => $requestId,
+            'procesada' =>  DB::raw('false')
+        ]);
+
         return response()->json([
-            'packagesIds' => "packagesIds",
-            'packages' => "Se encontraron 3 paquetes",
-            "message" => $empresa->rfc,
-            "requestId" =>  $requestId,
+            "message" => "Desarga Finalizada",
+            "requestId" =>  $file,
         ], 200);
 
         $solicitud = s_Solicitud::find('idpet', $requestId);
@@ -207,42 +216,15 @@ class ServiceController extends Controller
         }
 
         $packagesIds = $verify->getPackagesIds();
-        return response()->json([
-            'packagesIds' => $packagesIds,
-            'packages' => "Se encontraron {$verify->countPackages()} paquetes",
-            "message" => $message,
-            "requestId" => $requestId,
-        ], 200);
+        //return response()->json([
+        //   'packagesIds' => $packagesIds,
+        //   'packages' => "Se encontraron {$verify->countPackages()} paquetes",
+        //   "message" => $message,
+        //   "requestId" => $requestId,
+        // ], 200);
 
-        /**foreach ($verify->getPackagesIds() as $packageId) {
-            echo " > {$packageId}", PHP_EOL;
-        }*/
-    }
-
-    public function getDownloadLink(s_Empresa $empresa, $packagesIds)
-    {
         $message = "";
         $error = "";
-
-        // $zip = new ZipArchive;
-        // $fileName = 'Example.zip';
-        // if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE) {
-        //     $files = File::files(public_path('Zip_Example'));
-        //    Storage::put('files/' . auth('sanctum')->user()->id . '/' . 'zip_cfdi/' . $empresa->idempresa.'/' ."{$packagesIds}.zip", $files);
-
-        //    //'files/' . auth('sanctum')->user()->id . '/' . 'zip_cfdi/' . $empresa->idempresa.'/' ."{$packagesIds}.zip", 'hola';
-
-        //     foreach ($files as $key => $value) {
-        //         $file = basename($value);
-        //         $zip->addFile($value, $file);
-        //     }
-
-        //     $zip->close();
-        // }
-
-        // Creación de servicio
-        $service = new ConnectionController();
-        $service->createWebClient($empresa);
 
         foreach ($packagesIds as $packageId) {
             $download = $service->download($packageId);
@@ -253,6 +235,12 @@ class ServiceController extends Controller
             $zipfile = storage_path('app/public/files/' . auth('sanctum')->user()->id . '/' . 'zip_cfdi_meta/' . $empresa->idempresa . '/' . "$packageId.zip");
             file_put_contents($zipfile, $download->getPackageContent());
             $message += "El paquete {$packageId} se ha almacenado<br>";
+            FileDownload::create([
+                'name' => $packageId,
+                'paht' => $zipfile,
+                'idpet' => $requestId,
+                'procesada' =>  DB::raw('true')
+            ]);
         }
 
         return response()->json(['message' => $message, 'error' => $error], 200);

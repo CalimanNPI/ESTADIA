@@ -20,6 +20,7 @@
     <style>
         .router-link-active {
             font-weight: bold;
+            color: #3B82F6;
         }
     </style>
 </head>

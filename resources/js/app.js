@@ -29,8 +29,23 @@ import {
     faBars,
     faUserCog,
     faUserTag,
-    faUserTie
-} from "@fortawesome/free-solid-svg-icons"; // times, bars, user-cog, user-tag, user-tie ->fas
+    faUserTie,
+    faUserLock,
+    faLaptopCode,
+    faBuilding,
+    faSave,
+    faChartArea,
+    faUser,
+    faFolder,
+    faBell,
+    faHome,
+    faAngleDown,
+    faFileDownload,
+
+} from "@fortawesome/free-solid-svg-icons";
+/* times, bars, user-cog, user-tag, user-tie,
+ *user-clock, laptop-code,building, save,
+ *chart-area, user, folder ->fas**/
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 library.add(
     faWindowClose,
@@ -42,7 +57,18 @@ library.add(
     faBars,
     faUserCog,
     faUserTag,
-    faUserTie
+    faUserTie,
+    faUserLock,
+    faLaptopCode,
+    faBuilding,
+    faSave,
+    faChartArea,
+    faUser,
+    faFolder,
+    faBell,
+    faHome,
+    faAngleDown,
+    faFileDownload
 );
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
@@ -51,9 +77,7 @@ import { abilitiesPlugin } from "@casl/vue";
 Vue.use(abilitiesPlugin, ability);
 
 import auth from "./mixins/auth";
-import authEmpresa from "./mixins/empresa";
 Vue.mixin(auth);
-Vue.mixin(authEmpresa);
 //Vue.prototype.$currentEmpresa = '0'
 
 import VueCookies from "vue-cookies";
@@ -82,6 +106,10 @@ import PermissionCreate from "./Permission/Create.vue";
 import PermissionEdit from "./Permission/Edit.vue";
 
 import ProcesamientoCFDI from "./WebService/ProcesamientoCFDI.vue";
+import Reportes from "./WebService/Rportes.vue";
+import ReadZip from "./WebService/readZip.vue";
+
+import Dashboard from "./components/layouts/Dashboard.vue"
 
 const router = new VueRouter({
     mode: "history",
@@ -157,7 +185,7 @@ const router = new VueRouter({
         },
         {
             //fiel
-            path: "/empresa/fiel/:id",
+            path: "/empresa/fiel",
             component: EmpresaFiel,
             name: "empresa.fiel"
         },
@@ -166,6 +194,24 @@ const router = new VueRouter({
             path: "/procesamientoCFDI",
             component: ProcesamientoCFDI,
             name: "procesamiento"
+        },
+        {
+            //web service
+            path: "/procesamientoCFDI/reportes",
+            component: Rportes,
+            name: "reportes"
+        },
+        {
+            //web service
+            path: "/procesamientoCFDI/procesamiento",
+            component: ReadZip,
+            name: "readZip"
+        },
+        {
+            //web service
+            path: "/home",
+            component: Dashboard,
+            name: "Home"
         }
     ]
 });

@@ -3,38 +3,36 @@
 namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
+use App\Models\s_Empresa;
 use App\Models\s_Solicitud;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class SolicitudController extends Controller
 {
-    public function index()
+    public function solicitud(s_Empresa $empresa, $pendientes)
     {
-        $date = new \DateTime();
-
-        $solicitud = DB::table('s_solicitud')
-            ->select('s_solicitud.*')
-            ->where('estadosol', 'En proceso')
-            ->where('estadopet', 'Aceptada')
-            ->whereDate('fechasol', $date->format('Y/m/d'))
-            ->get();
+        if ($pendientes == 'true') {
+            $solicitud = s_Solicitud::all()
+            ->where('idempresa',  $empresa->idempresa)
+            ->where('estadosol', 'En proceso');
+             return response()->json($solicitud);
+        } else {
+            $solicitud = s_Solicitud::all()
+            ->where('idempresa',  $empresa->idempresa);
+        }
         return response()->json($solicitud);
     }
 
-    public function store(Request $request)
-    {
-    }
 
-    public function show()
+    public function getPathFiles(s_Empresa $empresa)
     {
-    }
+        $solicitud = DB::table('s_solicitud')
+        ->join('file_downloads', 's_solicitud.idpet', '=', 'file_downloads.idpet')
+        ->select('file_downloads.*')
+        ->where('select_file.procesada',  true)
+        ->get();
 
-    public function update()
-    {
-    }
-
-    public function destroy()
-    {
+        return response()->json($solicitud);
     }
 }

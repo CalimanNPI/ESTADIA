@@ -8,7 +8,7 @@
       p-6
       cursor-pointer
       mb-8
-      hover:bg-green-lightest
+      hover:bg-blue-500
       focus:outline-none focus:shadow-outline-green
     "
     tabindex="0"

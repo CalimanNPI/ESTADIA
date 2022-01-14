@@ -2,30 +2,34 @@ import { defineAbility } from "@casl/ability";
 
 
 export default defineAbility((can, cannot) => {
-    can("permission_index", "Permission");
-    can("permission_create", "Permission");
-    can("permission_edit", "Permission");
-    can("permission_destroy", "Permission");
+    can("user_management_access");
+    can("company_management_access");
 
-    can("role_index", "Role");
-    can("role_create", "Role");
-    can("role_edit", "Role");
-    can("role_destroy", "Role");
 
-    can("user_index", "User");
-    can("user_create", "User");
-    can("user_edit", "User");
-    can("role_index", "User");
+    can("permission_index");
+    can("permission_create");
+    can("permission_edit");
+    can("permission_destroy");
 
-    can("empresa_index", "Empresa");
-    can("empresa_create", "Empresa");
-    can("empresa_edit", "Empresa");
-    can("empresa_destroy", "Empresa");
+    can("role_index");
+    can("role_create");
+    can("role_edit");
+    can("role_destroy");
 
-    can("empresa_fiel", "Empresa");
+    can("user_index");
+    can("user_create");
+    can("user_edit");
+    can("user_destroy");
 
-    can("web_service", "User");
-    can("reports", "User");
+    can("empresa_index");
+    can("empresa_create");
+    can("empresa_edit");
+
+    can("empresa_fiel");
+
+    can("web_service");
+    can("reports");
+    can("read_zip");
 });
 
 

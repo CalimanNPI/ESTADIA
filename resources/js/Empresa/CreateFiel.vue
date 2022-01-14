@@ -1,86 +1,123 @@
 <template>
-  <form @submit.prevent="submit_from">
-    <div class="mb-6">
-      <Label>Contraseña</Label>
-      <Input
-        v-model="fields.password"
-        placeholder="Ingrese la Contraseña"
-      ></Input>
-      <input-error
-        v-if="errors && errors.password"
-        :message="errors.password[0]"
-      ></input-error>
-    </div>
-
-    <div class="mb-6">
-      <div class="relative">
-        <label for="cer" class="text-sm font-medium text-gray-900 block mb-2"
-          >Archivo CER</label
-        >
-        <input
-          type="file"
-          id="cer"
+  <div
+    class="
+      relative
+      flex flex-col
+      min-w-0
+      break-words
+      w-full
+      mb-6
+      shadow-sm
+      rounded
+      bg-white
+      sm:rounded-lg
+    "
+  >
+    <div class="rounded-t mb-0 px-4 py-3 border-b border-gray-200">
+      <div class="flex flex-wrap items-center">
+        <div
           class="
-            block
+            relative
             w-full
-            overflow-hidden
-            cursor-pointer
-            bg-gray-50
-            border border-gray-300
-            text-gray-900
-            focus:outline-none
-            focus:ring-2
-            focus:ring-blue-500
-            focus:border-transparent
-            sm:text-sm
-            rounded-lg
-            block
-            w-full
+            px-4
+            max-w-full
+            flex-grow flex-1
+            justify-between
           "
-          @change="select_file_cer"
-          required=""
-        />
+        >
+          <h3 class="font-semibold text-lg text-gray-800">Crear Clave Fiel</h3>
+        </div>
       </div>
     </div>
+    <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
+      <form @submit.prevent="submit_from">
+        <div class="mb-6">
+          <Label>Contraseña</Label>
+          <Input
+            v-model="fields.password"
+            placeholder="Ingrese la Contraseña"
+          ></Input>
+          <input-error
+            v-if="errors && errors.password"
+            :message="errors.password[0]"
+          ></input-error>
+        </div>
 
-    <div class="mb-6">
-      <div class="relative">
-        <label for="key" class="text-sm font-medium text-gray-900 block mb-2"
-          >Archivo KEY</label
-        >
-        <input
-          type="file"
-          id="key"
-          class="
-            block
-            w-full
-            overflow-hidden
-            cursor-pointer
-            bg-gray-50
-            border border-gray-300
-            text-gray-900
-            focus:outline-none
-            focus:ring-2
-            focus:ring-blue-500
-            focus:border-transparent
-            sm:text-sm
-            rounded-lg
-            block
-            w-full
-          "
-          @change="select_file_key"
-          required=""
+        <div class="mb-6">
+          <div class="relative">
+            <label
+              for="cer"
+              class="text-sm font-medium text-gray-900 block mb-2"
+              >Archivo CER</label
+            >
+            <input
+              type="file"
+              id="cer"
+              class="
+                block
+                w-full
+                overflow-hidden
+                cursor-pointer
+                bg-gray-50
+                border border-gray-300
+                text-gray-900
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                focus:border-transparent
+                sm:text-sm
+                rounded-lg
+                block
+                w-full
+              "
+              @change="select_file_cer"
+              required=""
+            />
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <div class="relative">
+            <label
+              for="key"
+              class="text-sm font-medium text-gray-900 block mb-2"
+              >Archivo KEY</label
+            >
+            <input
+              type="file"
+              id="key"
+              class="
+                block
+                w-full
+                overflow-hidden
+                cursor-pointer
+                bg-gray-50
+                border border-gray-300
+                text-gray-900
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                focus:border-transparent
+                sm:text-sm
+                rounded-lg
+                block
+                w-full
+              "
+              @change="select_file_key"
+              required=""
+            />
+          </div>
+        </div>
+
+        <Button
+          color="blue"
+          iconName="plus-square"
+          :disabled="form_submitting"
+          :value="form_submitting ? 'Guardando...' : 'Guardar'"
         />
-      </div>
+      </form>
     </div>
-
-    <Button
-      color="blue"
-      iconName="plus-square"
-      :disabled="form_submitting"
-      :value="form_submitting ? 'Guardando...' : 'Guardar'"
-    />
-  </form>
+  </div>
 </template>
 <script>
 import Input from "../components/Input.vue";
@@ -110,33 +147,43 @@ export default {
     },
     submit_from() {
       this.form_submitting = true;
-
-      let fields = new FormData();
-      for (let i in this.fields) {
-        fields.append(i, this.fields[i]);
-      }
-
-      axios
-        .post("/api/empresa/fiel/" + this.$route.params.id, fields)
-        .then((response) => {
-          if (response.status == 200) {
-            this.$swal({
-              icon: "success",
-              title: response.data.message,
-              text: response.data.fiel,
-            });
-          }
-
-          this.form_submitting = false;
-          this.$router.push("/empresa");
-        })
-        .catch((err) => {
-          this.$swal({ icon: "error", title: "Error" + err });
-          if (err.response.status === 422) {
-            this.errors = err.response.data.errors;
-          }
-          this.form_submitting = false;
+      if (!$cookies.isKey("currentEmpresa")) {
+        this.$swal({
+          icon: "error",
+          title: "Seleccione una empresa",
         });
+        this.form_submitting = false;
+      } else {
+        let fields = new FormData();
+        for (let i in this.fields) {
+          fields.append(i, this.fields[i]);
+        }
+
+        axios
+          .post(
+            "/api/empresa/fiel/" + this.$cookies.get("currentEmpresa"),
+            fields
+          )
+          .then((response) => {
+            if (response.status == 200) {
+              this.$swal({
+                icon: "success",
+                title: response.data.message,
+                text: response.data.fiel,
+              });
+            }
+
+            this.form_submitting = false;
+            this.$router.push("/empresa");
+          })
+          .catch((err) => {
+            this.$swal({ icon: "error", title: "Error" + err });
+            if (err.response.status === 422) {
+              this.errors = err.response.data.errors;
+            }
+            this.form_submitting = false;
+          });
+      }
     },
   },
 };

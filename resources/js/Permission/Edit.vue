@@ -1,24 +1,57 @@
 <template>
-  <form @submit.prevent="submit_from">
-    <div class="mb-6">
-      <Label>Nombre</Label>
-      <Input
-        v-model="fields.name"
-        placeholder="Ingrese el nombre del permiso"
-      ></Input>
-      <input-error
-        v-if="errors && errors.name"
-        :message="errors.name[0]"
-      ></input-error>
+  <div
+    class="
+      relative
+      flex flex-col
+      min-w-0
+      break-words
+      w-full
+      mb-6
+      shadow-sm
+      rounded
+      bg-white
+      sm:rounded-lg
+    "
+  >
+    <div class="rounded-t mb-0 px-4 py-3 border-b border-gray-200">
+      <div class="flex flex-wrap items-center">
+        <div
+          class="
+            relative
+            w-full
+            px-4
+            max-w-full
+            flex-grow flex-1
+            justify-between
+          "
+        >
+          <h3 class="font-semibold text-lg text-gray-800">Editar Permiso</h3>
+        </div>
+      </div>
     </div>
+    <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
+      <form @submit.prevent="submit_from">
+        <div class="mb-6">
+          <Label>Nombre</Label>
+          <Input
+            v-model="fields.name"
+            placeholder="Ingrese el nombre del permiso"
+          ></Input>
+          <input-error
+            v-if="errors && errors.name"
+            :message="errors.name[0]"
+          ></input-error>
+        </div>
 
-    <Button
-      color="blue"
-      iconName="edit"
-      :disabled="form_submitting"
-      :value="form_submitting ? 'Guardando...' : 'Guardar'"
-    />
-  </form>
+        <Button
+          color="blue"
+          iconName="edit"
+          :disabled="form_submitting"
+          :value="form_submitting ? 'Guardando...' : 'Guardar'"
+        />
+      </form>
+    </div>
+  </div>
 </template>
 <script>
 import Input from "../components/Input.vue";

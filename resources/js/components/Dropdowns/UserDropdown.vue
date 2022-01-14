@@ -8,13 +8,9 @@
     >
       <div class="items-center flex">
         <span
-          class="w-12 h-12 text-sm text-white bg-blue-200 inline-flex items-center justify-center rounded-full"
+          class="text-gray-800 text-sm uppercase lg:inline-block font-semibold inline-flex items-center justify-center rounded-full"
         >
-          <img
-            alt="..."
-            class="w-full rounded-full align-middle border-none shadow-lg"
-            src=""
-          />
+          {{currentUser.name}}   <font-awesome-icon :icon="['fas', 'angle-down']" />
         </span>
       </div>
     </a>
